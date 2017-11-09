@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>JsonField - FSharp.Json</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="vsapronov"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharp.Json/content/style.css" />
+    <script type="text/javascript" src="/FSharp.Json/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/vsapronov/FSharp.Json">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharp.Json/index.html">FSharp.Json</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>JsonField</h1>
+<p>
+  <span>Namespace: FSharp.Json</span><br />
+</p>
+<div class="xmldoc">
+<p>Attribute customizing serialization of members</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
+            new()
+          </code>
+          <div class="tip" id="25">
+            <strong>Signature:</strong> unit -&gt; JsonField<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L38-38" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Creates default <a href="fsharp-json-jsonfield.html" title="JsonField">JsonField</a> instance</p>
+
+
+              <p>CompiledName: <code>.ctor</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
+            new(name)
+          </code>
+          <div class="tip" id="26">
+            <strong>Signature:</strong> name:string -&gt; JsonField<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L23-23" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+              <p>CompiledName: <code>.ctor</code></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '27', 27)" onmouseover="showTip(event, '27', 27)">
+            AsJson()
+          </code>
+          <div class="tip" id="27">
+            <strong>Signature:</strong> unit -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L28-28" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls weather member represents unmapped JSON. Default value is false.</p>
+
+
+              <p>CompiledName: <code>set_AsJson</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
+            AsJson()
+          </code>
+          <div class="tip" id="28">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L28-28" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls weather member represents unmapped JSON. Default value is false.</p>
+
+
+              <p>CompiledName: <code>get_AsJson</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
+            DateTimeFormat()
+          </code>
+          <div class="tip" id="29">
+            <strong>Signature:</strong> unit -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L36-36" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls default DateTime and DateTimeOffset formats. Default value is "yyyy-MM-ddTHH:mm:ss.fffffffK".</p>
+
+
+              <p>CompiledName: <code>set_DateTimeFormat</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
+            DateTimeFormat()
+          </code>
+          <div class="tip" id="30">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L36-36" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls default DateTime and DateTimeOffset formats. Default value is "yyyy-MM-ddTHH:mm:ss.fffffffK".</p>
+
+
+              <p>CompiledName: <code>get_DateTimeFormat</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
+            DefaultValue()
+          </code>
+          <div class="tip" id="31">
+            <strong>Signature:</strong> unit -&gt; obj<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L34-34" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sets default value for non option member. Default value is null.</p>
+
+
+              <p>CompiledName: <code>set_DefaultValue</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '32', 32)" onmouseover="showTip(event, '32', 32)">
+            DefaultValue()
+          </code>
+          <div class="tip" id="32">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L34-34" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sets default value for non option member. Default value is null.</p>
+
+
+              <p>CompiledName: <code>get_DefaultValue</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '33', 33)" onmouseover="showTip(event, '33', 33)">
+            EnumValue()
+          </code>
+          <div class="tip" id="33">
+            <strong>Signature:</strong> unit -&gt; EnumMode<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L32-32" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls how Enum values should be represented. Default value is Name.</p>
+
+
+              <p>CompiledName: <code>set_EnumValue</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
+            EnumValue()
+          </code>
+          <div class="tip" id="34">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L32-32" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls how Enum values should be represented. Default value is Name.</p>
+
+
+              <p>CompiledName: <code>get_EnumValue</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
+            Name()
+          </code>
+          <div class="tip" id="35">
+            <strong>Signature:</strong> unit -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L26-26" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Field name in JSON. Use null value to use record member name. Default value is null.</p>
+
+
+              <p>CompiledName: <code>set_Name</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
+            Name()
+          </code>
+          <div class="tip" id="36">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L26-26" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Field name in JSON. Use null value to use record member name. Default value is null.</p>
+
+
+              <p>CompiledName: <code>get_Name</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
+            Transform()
+          </code>
+          <div class="tip" id="37">
+            <strong>Signature:</strong> unit -&gt; Type<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L30-30" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Tranform that should be applied to member. Default value is null.</p>
+
+
+              <p>CompiledName: <code>set_Transform</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
+            Transform()
+          </code>
+          <div class="tip" id="38">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L30-30" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Tranform that should be applied to member. Default value is null.</p>
+
+
+              <p>CompiledName: <code>get_Transform</code></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '39', 39)" onmouseover="showTip(event, '39', 39)">
+            Default
+          </code>
+          <div class="tip" id="39">
+            <strong>Signature:</strong> JsonField<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L41-41" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Default <a href="fsharp-json-jsonfield.html" title="JsonField">JsonField</a>.</p>
+
+
+              <p>CompiledName: <code>get_Default</code></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharp.Json/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharp.Json</li>
+            <li><a href="/FSharp.Json/index.html">Home page</a></li>
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharp.Json">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/vsapronov/FSharp.Json">Source Code on GitHub</a></li>
+            <li><a href="/FSharp.Json/license.html">License</a></li>
+            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>           
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vsapronov/FSharp.Json"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

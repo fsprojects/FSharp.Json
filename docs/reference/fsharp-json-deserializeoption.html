@@ -2,10 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Introducing your project
-</title>
+    <title>DeserializeOption - FSharp.Json</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="F# JSON Reflection based serialization library"/>
+    <meta name="description" content=""/>
     <meta name="author" content="vsapronov"/>
 
     <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
@@ -33,23 +32,65 @@
       <div class="row">
         <div class="span9" id="main">
           
-<h1><a name="Introducing-your-project" class="anchor" href="#Introducing-your-project">Introducing your project</a></h1>
-<p>Say more</p>
-<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
-<span class="l">2: </span>
-<span class="l">3: </span>
-<span class="l">4: </span>
-</pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
-<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
 
-<span class="i">Library</span><span class="o">.</span><span class="i">hello</span> <span class="n">0</span>
-</code></pre></td>
-</tr>
-</table>
-<p>Some more info</p>
 
-<div class="tip" id="fs1">namespace Microsoft.FSharp</div>
+
+<h1>DeserializeOption</h1>
+<p>
+  <span>Namespace: FSharp.Json</span><br />
+</p>
+<div class="xmldoc">
+<p>Modes of deserialization of option types</p>
+
+</div>
+  <h3>Union Cases</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Union Case</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            AllowOmit
+          </code>
+          <div class="tip" id="11">
+            <strong>Signature:</strong> <br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L127-127" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Allow members with None value to be omitted in JSON.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '12', 12)" onmouseover="showTip(event, '12', 12)">
+            RequireNull
+          </code>
+          <div class="tip" id="12">
+            <strong>Signature:</strong> <br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L129-129" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Require members with None value to have null value in JSON.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
         </div>
         <div class="span3">
@@ -57,17 +98,13 @@
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
             <li class="nav-header">FSharp.Json</li>
             <li><a href="/FSharp.Json/index.html">Home page</a></li>
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
             <li class="divider"></li>
             <li><a href="http://nuget.org/packages/FSharp.Json">Get Library via NuGet</a></li>
             <li><a href="https://github.com/vsapronov/FSharp.Json">Source Code on GitHub</a></li>
             <li><a href="/FSharp.Json/license.html">License</a></li>
-            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>
-            
-            <li class="nav-header">Getting started</li>
-            <li><a href="/FSharp.Json/tutorial.html">Sample tutorial</a></li>
-
-            <li class="nav-header">Documentation</li>
-            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
+            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>           
           </ul>
         </div>
       </div>
