@@ -54,8 +54,16 @@
   <ItemGroup>
     <None Include="paket.references" />
     <None Include="paket.template" />
-    <Compile Include="Library.fs" />
     <Content Include="App.config" />
+    <Compile Include="TextConversions.fs" />
+    <Compile Include="JsonValue.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="InterfaceTypes.fs" />
+    <Compile Include="JsonValueHelpers.fs" />
+    <Compile Include="Reflection.fs" />
+    <Compile Include="Core.fs" />
+    <Compile Include="Transforms.fs" />
+    <Compile Include="Interface.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

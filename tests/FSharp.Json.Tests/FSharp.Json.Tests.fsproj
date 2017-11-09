@@ -64,8 +64,20 @@
   <Import Project="..\..\.paket\paket.targets" />
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="Tests.fs" />
     <Content Include="App.config" />
+    <Compile Include="Record.fs" />
+    <Compile Include="Object.fs" />
+    <Compile Include="DateTimeFormat.fs" />
+    <Compile Include="Option.fs" />
+    <Compile Include="Enum.fs" />
+    <Compile Include="Tuple.fs" />
+    <Compile Include="Collections.fs" />
+    <Compile Include="Map.fs" />
+    <Compile Include="Union.fs" />
+    <Compile Include="Default.fs" />
+    <Compile Include="AsJson.fs" />
+    <Compile Include="Transforms.fs" />
+    <Compile Include="Namings.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

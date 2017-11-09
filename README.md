@@ -4,26 +4,28 @@
 
 See [the home page](http://vsapronov.github.io/FSharp.Json) for details.
 
-Here's example of FSharp.Json usage:
+Here's basic example of FSharp.Json usage:
 
 ```fsharp
 open FSharp.Json
 
 // Your record type
 type RecordType = {
-	stringmember: string
-	intmember: int
+    stringMember: string
+    intMember: int
 }
 
-let data: RecordType = { stringmember = "some value"; intmember = 42 }
+let data: RecordType = { stringMember = "The string"; intMember = 123 }
 
 // serialize record into JSON
 let json = Json.serialize data
-
-// json is """{ "stringmember": "some value", "intmember": 42 }"""
+printfn "%s" json
+// json is """{ "stringMember": "The string", "intMember": 123 }"""
 
 // deserialize from JSON to record
-let data = Json.deserialize<RecordType> json
+let deserialized = Json.deserialize<RecordType> json
+printfn "%A" deserialized
+// deserialized is {stringMember = "some value"; intMember = 123;}
 ```
 
 ## Maintainer(s)
