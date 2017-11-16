@@ -184,3 +184,4 @@ docsrc/content/license.md
 docsrc/content/release-notes.md
 .fake
 docsrc/tools/FSharp.Formatting.svclog
+docs/
