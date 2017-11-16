@@ -35,8 +35,7 @@ Documentation
 The library comes with following documentation. 
 
  * [API Reference](reference/index.html) contains automatically generated documentation for all types, modules
-   and functions in the library. This includes additional brief samples on using most of the
-   functions.
+   and functions in the library.
  
 Contributing and copyright
 --------------------------
@@ -49,7 +48,7 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [content]: https://github.com/vsapronov/FSharp.Json/tree/master/docs/content
+  [content]: https://github.com/vsapronov/FSharp.Json/tree/master/docsrc/content
   [gh]: https://github.com/vsapronov/FSharp.Json
   [issues]: https://github.com/vsapronov/FSharp.Json/issues
   [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
