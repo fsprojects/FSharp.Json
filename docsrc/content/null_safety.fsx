@@ -50,7 +50,6 @@ let deserialized = Json.deserialize<RecordType> json
 printfn "%A" deserialized
 
 (**
-Same logic applies to all types.
 If value could be null or missing in JSON then F# type used for corresponding member should be option.
 
 Customization of null deserialization
@@ -70,6 +69,9 @@ type RecordType = {
 
 // this will work fine by default even when option field is missing 
 let deserialized1 = Json.deserialize<RecordType> "{}"
+
+printfn "%A" deserialized1
+// deserialized1.stringMember equals to None
 
 // create config that require option None to be represented as null
 let config = JsonConfig.create(deserializeOption = DeserializeOption.RequireNull)
