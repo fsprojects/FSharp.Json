@@ -52,6 +52,7 @@ Documentation
 Following pages are describing main features and aspects of FSharp.Json:
 
  * [Basic Usage Example](basic_example.html)
+ * [Supported Types](supported_types.html)
  * [Fields Naming](fields_naming.html)
  * [Null Safety](null_safety.html)
 
