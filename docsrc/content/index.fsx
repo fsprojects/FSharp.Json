@@ -55,6 +55,7 @@ Following pages are describing main features and aspects of FSharp.Json:
  * [Supported Types](supported_types.html)
  * [Fields Naming](fields_naming.html)
  * [Null Safety](null_safety.html)
+ * [Enums](enums.html)
  * [Type Transform](transform.html)
 
 Each feature of FSharp.Json is thoroughly covered by [unit tests][unit_tests].

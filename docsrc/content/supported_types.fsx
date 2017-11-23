@@ -47,8 +47,8 @@ Represented as `string`.
 
 Enum
 ----
-Represented as `string` that is enum member name.
-Could be represented as `number` corresponding to enum member id.
+Represented as `string` that is enum value name.
+Could be represented as `number` corresponding to enum value.
 Read more on [Enums](enums.html) page.
 
 option
