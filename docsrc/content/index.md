@@ -1,4 +1,3 @@
-(**
 FSharp.Json: JSON Serialization Library
 =======================================
 
@@ -80,4 +79,3 @@ redistribution for both commercial and non-commercial purposes. For more informa
   [gh]: https://github.com/vsapronov/FSharp.Json
   [issues]: https://github.com/vsapronov/FSharp.Json/issues
   [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
-*)
