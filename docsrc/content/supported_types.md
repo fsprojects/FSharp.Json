@@ -1,7 +1,3 @@
-(*** hide ***)
-#I "../../bin/FSharp.Json"
-
-(**
 Supported Types
 ===============
 
@@ -81,5 +77,3 @@ union
 -----
 Unions are represented as `object` with special structure in JSON.
 Read more on [Unions](unions.html) page.
-
-*)
