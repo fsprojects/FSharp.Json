@@ -102,6 +102,7 @@ printfn "%s" json
 Customization of None serialization
 -----------------------------------
 The one can control how None values are respresented in JSON through config.
+
 Example belows shows how to omit members with None values:
 *)
 

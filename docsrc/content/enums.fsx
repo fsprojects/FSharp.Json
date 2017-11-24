@@ -6,6 +6,7 @@ Emums
 =====
 
 By default enum value is represented as `string` that is enum member name.
+
 Check example code below:
 *)
 #r "FSharp.Json.dll"
@@ -36,6 +37,7 @@ Customizing enum serialization
 
 EnumValue member of [JsonField](reference/fsharp-json-jsonfield.html) attribute could be used to change serialization of enums.
 There are two [modes](reference/fsharp-json-enummode.html) supported currently: enum value name and enum value.
+
 Here's an example of custom enum serialization:
 *)
 #r "FSharp.Json.dll"

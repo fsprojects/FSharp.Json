@@ -44,6 +44,7 @@ Change all fields names
 What if all fields names should be different in JSON compared to F# member names?
 This could be needed for example if naming convention used in F# does not match JSON naming convention.
 FSharp.Json allows to map fields names with naming function.
+
 In the example below all camel case F# record members are mapped into snake case JSON fields:
 *)
 
