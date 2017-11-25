@@ -75,8 +75,8 @@ module Record =
     let ``Record field name serialization with snake case naming`` () =
         let expected = """{"some_value":"The string"}"""
         let value = { UpperCaseRecord.SomeValue = "The string" }
-        let config = JsonConfig.create(jsonFieldNaming = Json.snakeCase)
-        let actual = Json.serializeExU config value
+        let config = JsonConfig.create(unformatted = true, jsonFieldNaming = Json.snakeCase)
+        let actual = Json.serializeEx config value
         Assert.AreEqual(expected, actual)
 
     [<Test>]

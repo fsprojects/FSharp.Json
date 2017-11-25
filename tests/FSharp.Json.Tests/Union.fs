@@ -80,8 +80,8 @@ module Union =
     [<Test>]
     let ``Union cases serialization with snake case naming`` () =
         let value = OneFieldCase "The string"
-        let config = JsonConfig.create(jsonFieldNaming = Json.snakeCase)
-        let actual = Json.serializeExU config value
+        let config = JsonConfig.create(unformatted = true, jsonFieldNaming = Json.snakeCase)
+        let actual = Json.serializeEx config value
         let expected = """{"one_field_case":"The string"}"""
         Assert.AreEqual(expected, actual)
         
