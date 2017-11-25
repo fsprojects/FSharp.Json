@@ -54,12 +54,41 @@ let deserialized = Json.deserialize<TheUnion> json
 // deserialized is OneFieldCase("The string")
 
 (**
+Single case union
+-----------------
+
+Single case union is a special scenario.
+Read [here](https://fsharpforfunandprofit.com/posts/designing-with-types-single-case-dus/) about single case union usage.
+In such case serializing union as JSON object is overkill.
+It's more convenient to represent single case union the same way as a wrapped type.
+
+Here's example of single case union serialization:
+*)
+
+#r "FSharp.Json.dll"
+open FSharp.Json
+
+// Single case union type
+type TheUnion = SingleCase of string
+
+type TheRecord = {
+    // value will be just a string - wrapped into union type
+    value: TheUnion
+}
+
+let data = { TheRecord.value = SingleCase "The string" }
+
+let json = Json.serialize data
+// json is """{"value":"The string"}"""
+
+let deserialized = Json.deserialize<TheRecord> json
+// deserialized is { TheRecord.value = SingleCase "The string" }
+
+(**
 Union modes
 -----------
 
-All examples above are describing default serialization of union into JSON.
-This mode is known as "case key as a field name" mode.
-There's another [union mode](reference/fsharp-json-unionmode.html) that represents union as JSON object with two fields.
+There's [union mode](reference/fsharp-json-unionmode.html) that represents union as JSON object with two fields.
 One field is for case key and another one is for case value. This mode is called "case key as a field value"
 If this mode is used then names of these two field should be provided through [JsonUnion attribute](reference/fsharp-json-jsonunion.html).
 

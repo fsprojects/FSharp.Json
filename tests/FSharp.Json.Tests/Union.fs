@@ -92,3 +92,23 @@ module Union =
         let config = JsonConfig.create(jsonFieldNaming = Json.snakeCase)
         let actual = Json.deserializeEx<TheUnion> config json
         Assert.AreEqual(expected, actual)
+
+    type SingleCaseUnion = SingleCase of string
+
+    type SingleCaseRecord = {
+        value: SingleCaseUnion
+    }
+
+    [<Test>]
+    let ``Union single case serialization`` () =
+        let value = { SingleCaseRecord.value = SingleCase "The string" }
+        let actual = Json.serializeU value
+        let expected = """{"value":"The string"}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union single case deserialization`` () =
+        let expected = { SingleCaseRecord.value = SingleCase "The string" }
+        let json = Json.serialize(expected)
+        let actual = Json.deserialize<SingleCaseRecord> json
+        Assert.AreEqual(expected, actual)
