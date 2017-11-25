@@ -133,6 +133,8 @@ type JsonFieldNaming = string -> string
 
 /// Configuration for JSON serialization/deserialization
 type JsonConfig = {
+    /// Generates unformatted JSON if set to true.
+    unformatted: bool
     /// Controls serialization of option None value.
     serializeNone: SerializeNone
     /// Controls deserialization of option types.
@@ -142,8 +144,9 @@ type JsonConfig = {
 }
 with
     /// Creates customized [JsonConfig], each parameter corresponds to [JsonConfig] record member.
-    static member create (?serializeNone, ?deserializeOption, ?jsonFieldNaming) =
+    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming) =
         {
+            JsonConfig.unformatted = defaultArg unformatted false
             JsonConfig.serializeNone = defaultArg serializeNone SerializeNone.Null
             JsonConfig.deserializeOption = defaultArg deserializeOption DeserializeOption.AllowOmit
             JsonConfig.jsonFieldNaming = defaultArg jsonFieldNaming id
