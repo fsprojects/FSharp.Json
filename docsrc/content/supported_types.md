@@ -77,3 +77,7 @@ union
 -----
 Unions are represented as `object` with special structure in JSON.
 Read more on [Unions](unions.html) page.
+
+obj
+---
+Read [Untyped Data](untyped_data.html) page.

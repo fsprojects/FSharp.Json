@@ -76,14 +76,19 @@ module internal Core =
                 JsonValue.String strvalue
             | mode -> failSerialization <| sprintf "Failed to serialize enum %s, unsupported enum mode: %A" t.Name mode
 
+        let getUntypedType (t: Type) (value: obj): Type =
+            if t = typeof<obj> then
+                if config.allowUntyped then
+                    value.GetType()
+                else
+                    failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
+            else t
+
         let serializeNonOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
             match jsonField.AsJson with
             | false ->
                 let t, value = transformToTargetType t value jsonField.Transform
-                let t =
-                    if t = typeof<obj> then
-                        value.GetType()
-                    else t
+                let t = getUntypedType t value
                 match t with
                 | t when t = typeof<int> ->
                     JsonValue.Number (decimal (value :?> int))
@@ -230,6 +235,15 @@ module internal Core =
                 Enum.Parse(t, valueStr)
             | mode -> failDeserialization path <| sprintf "Failed to deserialize enum %s, unsupported enum mode: %A" t.Name mode
 
+        let getUntypedType (path: JsonPath) (t: Type) (jvalue: JsonValue): Type =
+            match t with
+            | t when t = typeof<obj> ->
+                if config.allowUntyped then
+                    getJsonValueType jvalue
+                else
+                    failDeserialization path <| sprintf "Failed to deserialize object, allowUntyped set to false"
+            | t -> t 
+
         let deserializeNonOption (path: JsonPath) (t: Type) (jsonField: JsonField) (jvalue: JsonValue): obj =
             match jsonField.AsJson with
             | true ->
@@ -238,10 +252,7 @@ module internal Core =
                 | _ -> jvalue.ToString(JsonSaveOptions.DisableFormatting) :> obj
             | false ->
                 let t = getTargetType t jsonField
-                let t =
-                    match t with
-                    | t when t = typeof<obj> -> getJsonValueType jvalue
-                    | t -> t 
+                let t = getUntypedType path t jvalue
                 let jvalue =
                     match t with
                     | t when t = typeof<int> ->
