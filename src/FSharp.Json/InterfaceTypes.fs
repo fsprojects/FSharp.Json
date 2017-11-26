@@ -141,15 +141,18 @@ type JsonConfig = {
     deserializeOption: DeserializeOption
     /// Sets JSON fields naming strategy.
     jsonFieldNaming: JsonFieldNaming
+    /// Allows untyped data, like obj
+    allowUntyped: bool
 }
 with
     /// Creates customized [JsonConfig], each parameter corresponds to [JsonConfig] record member.
-    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming) =
+    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming, ?allowUntyped) =
         {
             JsonConfig.unformatted = defaultArg unformatted false
             JsonConfig.serializeNone = defaultArg serializeNone SerializeNone.Null
             JsonConfig.deserializeOption = defaultArg deserializeOption DeserializeOption.AllowOmit
             JsonConfig.jsonFieldNaming = defaultArg jsonFieldNaming id
+            JsonConfig.allowUntyped = defaultArg allowUntyped false
         }
     /// Default [JsonConfig].
     static member Default = JsonConfig.create()

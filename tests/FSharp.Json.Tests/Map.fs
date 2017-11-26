@@ -29,5 +29,6 @@ module Map =
     let ``Map<string,obj> deserialization`` () =
         let json = """{"key1":"value","key2":123}"""
         let expected = Map.ofList [("key1", "value" :> obj); ("key2", 123 :> obj)]
-        let actual = Json.deserialize<Map<string, obj>> json
+        let config = JsonConfig.create(allowUntyped = true)
+        let actual = Json.deserializeEx<Map<string, obj>> config json
         Assert.AreEqual(expected, actual)
