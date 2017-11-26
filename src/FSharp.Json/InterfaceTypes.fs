@@ -14,10 +14,12 @@ type ITypeTransform =
 
 /// Controls Enum serialization
 type EnumMode =
+    /// Use default setting. Could be changed through [JsonConfig].
+    | Default = 0
     /// Serialize Enum value as it's name
-    | Name = 0
+    | Name = 1
     /// Serialize Enum value as it's value
-    | Value = 1
+    | Value = 2
 
 /// Attribute customizing serialization of members 
 type JsonField (name: string) =
@@ -29,7 +31,7 @@ type JsonField (name: string) =
     /// Tranform that should be applied to member. Default value is null.
     member val public Transform: Type = null with get, set
     /// Controls how Enum values should be represented. Default value is Name.
-    member val public EnumValue: EnumMode = EnumMode.Name with get, set
+    member val public EnumValue: EnumMode = EnumMode.Default with get, set
     /// Sets default value for non option member. Default value is null.
     member val public DefaultValue: obj = null with get, set
     /// Controls default DateTime and DateTimeOffset formats. Default value is "yyyy-MM-ddTHH:mm:ss.fffffffK".
@@ -133,26 +135,29 @@ type JsonFieldNaming = string -> string
 
 /// Configuration for JSON serialization/deserialization
 type JsonConfig = {
-    /// Generates unformatted JSON if set to true.
+    /// Generates unformatted JSON if set to true. Default is false.
     unformatted: bool
-    /// Controls serialization of option None value.
+    /// Controls serialization of option None value. Default is SerializeNone.Null.
     serializeNone: SerializeNone
-    /// Controls deserialization of option types.
+    /// Controls deserialization of option types. Default is DeserializeOption.AllowOmit.
     deserializeOption: DeserializeOption
-    /// Sets JSON fields naming strategy.
+    /// Sets JSON fields naming strategy. Default is `id` function.
     jsonFieldNaming: JsonFieldNaming
-    /// Allows untyped data, like obj
+    /// Allows untyped data, like obj. Default is false.
     allowUntyped: bool
+    /// Controls serialization of enums. Default is EnumMode.Name
+    enumValue: EnumMode
 }
 with
     /// Creates customized [JsonConfig], each parameter corresponds to [JsonConfig] record member.
-    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming, ?allowUntyped) =
+    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming, ?allowUntyped, ?enumValue) =
         {
             JsonConfig.unformatted = defaultArg unformatted false
             JsonConfig.serializeNone = defaultArg serializeNone SerializeNone.Null
             JsonConfig.deserializeOption = defaultArg deserializeOption DeserializeOption.AllowOmit
             JsonConfig.jsonFieldNaming = defaultArg jsonFieldNaming id
             JsonConfig.allowUntyped = defaultArg allowUntyped false
+            JsonConfig.enumValue = defaultArg enumValue EnumMode.Name
         }
     /// Default [JsonConfig].
     static member Default = JsonConfig.create()
