@@ -33,6 +33,14 @@ module Enum =
         let expected = """{"value":"Two"}"""
         Assert.AreEqual(expected, actual)
 
+    [<Test>]
+    let ``Enum serialization - config setting`` () =
+        let value = { TheNumberEnum.value = NumberEnum.Two }
+        let config = JsonConfig.create(unformatted = true, enumValue = EnumMode.Value)
+        let actual = Json.serializeEx config value
+        let expected = """{"value":2}"""
+        Assert.AreEqual(expected, actual)
+
 //    type LetterEnum =
 //    | LetterA = 'a'
 //    | LetterB = 'b'

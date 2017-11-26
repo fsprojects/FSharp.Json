@@ -62,12 +62,21 @@ module internal Core =
             let valueType = value.GetType()
             (valueType, value)
 
+    let getEnumMode (config: JsonConfig) (jsonField: JsonField) =
+        match jsonField.EnumValue with
+        | EnumMode.Default ->
+            match config.enumValue with
+            | EnumMode.Default -> EnumMode.Name
+            | m -> m
+        | m -> m 
+
     let failSerialization (message: string) =
         raise (new JsonSerializationError(message))
 
     let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
         let serializeEnum (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
-            match jsonField.EnumValue with
+            let enumMode = getEnumMode config jsonField
+            match enumMode with
             | EnumMode.Value ->
                 let index = decimal (value :?> int)
                 JsonValue.Number index
@@ -226,7 +235,8 @@ module internal Core =
                 
     let rec deserialize (config: JsonConfig) (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
         let deserializeEnum (path: JsonPath) (t: Type) (jsonField: JsonField) (jvalue: JsonValue): obj =
-            match jsonField.EnumValue with
+            let enumMode = getEnumMode config jsonField
+            match enumMode with
             | EnumMode.Value ->
                 let index = JsonValueHelpers.getInt path jvalue
                 Enum.ToObject(t, index)
