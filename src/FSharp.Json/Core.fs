@@ -152,6 +152,15 @@ module internal Core =
                     | Omit -> None
             | _ -> Some (serializeNonOption t jsonField value)
 
+        let serializeUnwrapOptionWithNull (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
+            match t with
+            |  t when isOption t ->
+                let unwrapedValue = unwrapOption t value
+                match unwrapedValue with
+                | Some value -> serializeNonOption (getOptionType t) jsonField value
+                | None -> JsonValue.Null
+            | _ -> serializeNonOption t jsonField value
+
         let serializeProperty (therec: obj) (prop: PropertyInfo): (string*JsonValue) option =
             let jsonField = getJsonFieldProperty prop
             let propValue = prop.GetValue(therec, Array.empty)
@@ -164,7 +173,17 @@ module internal Core =
         let serializeEnumerable (values: IEnumerable): JsonValue =
             let items =
                 values.Cast<Object>()
-                |> Seq.map (fun value -> serializeUnwrapOption (value.GetType()) JsonField.Default value)
+                |> Seq.map (fun value -> 
+                    serializeUnwrapOption (value.GetType()) JsonField.Default value)
+                |> Seq.map (someOrDefault JsonValue.Null)
+            items |> Array.ofSeq |> JsonValue.Array
+
+        let serializeTupleItems (types: Type seq) (values: IEnumerable): JsonValue =
+            let items =
+                values.Cast<Object>()
+                |> Seq.zip types
+                |> Seq.map (fun (t, value) -> 
+                    serializeUnwrapOption t JsonField.Default value)
                 |> Seq.map (someOrDefault JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
@@ -187,13 +206,15 @@ module internal Core =
         let serializeUnion (t: Type) (theunion: obj): JsonValue =
             let caseInfo, values = FSharpValue.GetUnionFields(theunion, t)
             let jsonField = getJsonFieldUnionCase caseInfo
+            let types = caseInfo.GetFields() |> Array.map (fun p -> p.PropertyType)
             let jvalue =
                 match values.Length with
                 | 1 ->
                     let caseValue = values.[0]
-                    serializeNonOption (caseValue.GetType()) jsonField caseValue
+                    let caseType = types.[0]
+                    serializeUnwrapOptionWithNull caseType jsonField caseValue
                 | _ ->
-                    serializeEnumerable values
+                    serializeTupleItems types values
             let unionCases = getUnionCases caseInfo.DeclaringType
             match unionCases.Length with
             | 1 -> jvalue
@@ -214,7 +235,7 @@ module internal Core =
         | t when isMap t -> serializeKvpEnumerable (value :?> IEnumerable)
         | t when isArray t -> serializeEnumerable (value :?> IEnumerable)
         | t when isList t -> serializeEnumerable (value :?> IEnumerable)
-        | t when isTuple t -> serializeEnumerable (FSharpValue.GetTupleFields value)
+        | t when isTuple t -> serializeTupleItems (getTupleElements t) (FSharpValue.GetTupleFields value)
         | t when isUnion t -> serializeUnion t value
         | t ->
             let msg = sprintf "Failed to serialize, must be one of following types: record, map, array, list, tuple, union. Type is: %s." t.Name
