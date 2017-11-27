@@ -75,11 +75,20 @@ module internal Core =
 
     let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
         let serializeEnum (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
+            let baseT = Enum.GetUnderlyingType t
             let enumMode = getEnumMode config jsonField
             match enumMode with
             | EnumMode.Value ->
-                let index = decimal (value :?> int)
-                JsonValue.Number index
+                match baseT with
+                | t when t = typeof<int> ->
+                    let enumValue = decimal (value :?> int)
+                    JsonValue.Number enumValue
+                | t when t = typeof<byte> ->
+                    let enumValue = decimal (value :?> byte)
+                    JsonValue.Number enumValue
+                | t when t = typeof<char> ->
+                    let enumValue = sprintf "%c" (value :?> char)
+                    JsonValue.String enumValue
             | EnumMode.Name ->
                 let strvalue = Enum.GetName(t, value)
                 JsonValue.String strvalue
@@ -237,11 +246,20 @@ module internal Core =
                 
     let rec deserialize (config: JsonConfig) (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
         let deserializeEnum (path: JsonPath) (t: Type) (jsonField: JsonField) (jvalue: JsonValue): obj =
+            let baseT = Enum.GetUnderlyingType t
             let enumMode = getEnumMode config jsonField
             match enumMode with
             | EnumMode.Value ->
-                let index = JsonValueHelpers.getInt path jvalue
-                Enum.ToObject(t, index)
+                match baseT with
+                | baseT when baseT = typeof<int> ->
+                    let enumValue = JsonValueHelpers.getInt path jvalue
+                    Enum.ToObject(t, enumValue)
+                | baseT when baseT = typeof<byte> ->
+                    let enumValue = JsonValueHelpers.getByte path jvalue
+                    Enum.ToObject(t, enumValue)
+                | baseT when baseT = typeof<char> ->
+                    let enumValue = JsonValueHelpers.getChar path jvalue
+                    Enum.ToObject(t, enumValue)
             | EnumMode.Name ->
                 let valueStr = JsonValueHelpers.getString path jvalue
                 Enum.Parse(t, valueStr)
