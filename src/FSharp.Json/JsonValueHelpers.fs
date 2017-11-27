@@ -42,6 +42,14 @@ module internal JsonValueHelpers =
         | JsonValue.String value -> value
         | _ -> raiseWrongType path "string" jvalue
 
+    let getChar (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.String value ->
+            match value.Length with
+            | 1 -> value.Chars(0)
+            | _ -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" value))
+        | _ -> raiseWrongType path "char" jvalue
+
     let getDateTime cultureInfo (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.String value -> 

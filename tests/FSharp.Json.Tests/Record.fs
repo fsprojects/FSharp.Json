@@ -14,6 +14,7 @@ module Record =
         theGuid: Guid
         theDateTime: DateTime
         theDateTimeOffset: DateTimeOffset
+        theChar: char
     }
 
     [<Test>]
@@ -28,6 +29,7 @@ module Record =
             theGuid = Guid.NewGuid()
             theDateTime = DateTime.Now
             theDateTimeOffset = DateTimeOffset.Now
+            theChar = 'a'
         }
         let json = Json.serialize(expected)
         let actual = Json.deserialize<TheRecord> json
