@@ -32,6 +32,12 @@ module internal JsonValueHelpers =
         | JsonValue.Float value -> decimal value
         | _ -> raiseWrongType path "decimal" jvalue
 
+    let getByte (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> byte value
+        | JsonValue.Float value -> byte value
+        | _ -> raiseWrongType path "byte" jvalue
+
     let getBool (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Boolean value -> value
@@ -41,6 +47,14 @@ module internal JsonValueHelpers =
         match jvalue with
         | JsonValue.String value -> value
         | _ -> raiseWrongType path "string" jvalue
+
+    let getChar (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.String value ->
+            match value.Length with
+            | 1 -> value.Chars(0)
+            | _ -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" value))
+        | _ -> raiseWrongType path "char" jvalue
 
     let getDateTime cultureInfo (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with

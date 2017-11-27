@@ -90,14 +90,14 @@ module Option =
 
     [<Test>]
     let ``JsonConfig.serializeNone - member with None value as null`` () =
-        let config = JsonConfig.create(serializeNone = SerializeNone.Null)
-        let actual = Json.serializeExU config { TheOption.value = None }
+        let config = JsonConfig.create(unformatted = true, serializeNone = SerializeNone.Null)
+        let actual = Json.serializeEx config { TheOption.value = None }
         let expected = """{"value":null}"""
         Assert.AreEqual(expected, actual)
 
     [<Test>]
     let ``JsonConfig.serializeNone - member with None value is ommitted`` () =
-        let config = JsonConfig.create(serializeNone = SerializeNone.Omit)
-        let actual = Json.serializeExU config { TheOption.value = None }
+        let config = JsonConfig.create(unformatted = true, serializeNone = SerializeNone.Omit)
+        let actual = Json.serializeEx config { TheOption.value = None }
         let expected = """{}"""
         Assert.AreEqual(expected, actual)

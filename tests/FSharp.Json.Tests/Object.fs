@@ -11,6 +11,7 @@ module Object =
     [<Test>]
     let ``Object serialization/deserialization`` () =
         let expected = { ObjectRecord.value = "The string" }
-        let json = Json.serializeU expected
-        let actual = Json.deserialize<ObjectRecord> json
+        let config = JsonConfig.create(allowUntyped = true, unformatted = true)
+        let json = Json.serializeEx config expected
+        let actual = Json.deserializeEx<ObjectRecord> config json
         Assert.AreEqual(expected, actual)

@@ -28,13 +28,12 @@ module Json =
     /// Serailizes F# object into JSON. Uses provided [JsonConfig].
     let serializeEx (config: JsonConfig) (theobj: obj): string =
         let json = Core.serialize config (theobj.GetType()) theobj
-        json.ToString()
+        let saveOptions =
+            match config.unformatted with
+            | true -> JsonSaveOptions.DisableFormatting
+            | false -> JsonSaveOptions.None
+        json.ToString(saveOptions)
 
-    /// Serailizes F# object into unformatted JSON. Uses provided [JsonConfig].
-    let serializeExU (config: JsonConfig) (theobj: obj): string =
-        let json = Core.serialize config (theobj.GetType()) theobj
-        json.ToString(JsonSaveOptions.DisableFormatting)
-    
     /// Deserailizes JSON into F# type provided as generic parameter. Uses provided [JsonConfig].
     let deserializeEx<'T> (config: JsonConfig) (json: string): 'T =
         let value = JsonValue.Parse(json)
@@ -44,7 +43,9 @@ module Json =
     let serialize (theobj: obj) = serializeEx JsonConfig.Default theobj
 
     /// Serailizes F# object into unformatted JSON. Uses default [JsonConfig].
-    let serializeU (theobj: obj) = serializeExU JsonConfig.Default theobj
+    let serializeU (theobj: obj) =
+        let config = JsonConfig.create(unformatted = true)
+        serializeEx config theobj
 
     /// Deserailizes JSON into F# type provided as generic parameter. Uses default [JsonConfig].
     let deserialize<'T> (json: string) = deserializeEx<'T> JsonConfig.Default json
