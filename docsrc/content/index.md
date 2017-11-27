@@ -58,6 +58,7 @@ Following pages are describing main features and aspects of FSharp.Json:
  * [Enums](enums.html)
  * [Unions](unions.html)
  * [Type Transform](transform.html)
+ * [Untyped Data](untyped_data.html)
 
 Each feature of FSharp.Json is thoroughly covered by [unit tests][unit_tests].
 

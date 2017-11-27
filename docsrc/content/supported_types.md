@@ -23,6 +23,10 @@ string
 ------
 Represented as `string` in JSON.
 
+char
+----
+Represented as `string` with single character in JSON.
+
 bool
 ----
 Represented as `bool` in JSON.
@@ -77,3 +81,7 @@ union
 -----
 Unions are represented as `object` with special structure in JSON.
 Read more on [Unions](unions.html) page.
+
+obj
+---
+Read [Untyped Data](untyped_data.html) page.

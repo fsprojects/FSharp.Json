@@ -14,6 +14,7 @@ module Record =
         theGuid: Guid
         theDateTime: DateTime
         theDateTimeOffset: DateTimeOffset
+        theChar: char
     }
 
     [<Test>]
@@ -28,6 +29,7 @@ module Record =
             theGuid = Guid.NewGuid()
             theDateTime = DateTime.Now
             theDateTimeOffset = DateTimeOffset.Now
+            theChar = 'a'
         }
         let json = Json.serialize(expected)
         let actual = Json.deserialize<TheRecord> json
@@ -75,8 +77,8 @@ module Record =
     let ``Record field name serialization with snake case naming`` () =
         let expected = """{"some_value":"The string"}"""
         let value = { UpperCaseRecord.SomeValue = "The string" }
-        let config = JsonConfig.create(jsonFieldNaming = Json.snakeCase)
-        let actual = Json.serializeExU config value
+        let config = JsonConfig.create(unformatted = true, jsonFieldNaming = Json.snakeCase)
+        let actual = Json.serializeEx config value
         Assert.AreEqual(expected, actual)
 
     [<Test>]
