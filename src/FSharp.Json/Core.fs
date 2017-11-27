@@ -111,6 +111,8 @@ module internal Core =
                     JsonValue.Boolean (value :?> bool)
                 | t when t = typeof<string> ->
                     JsonValue.String (value :?> string)
+                | t when t = typeof<char> ->
+                    JsonValue.String (string(value :?> char))
                 | t when t = typeof<DateTime> ->
                     JsonValue.String ((value :?> DateTime).ToString(jsonField.DateTimeFormat))
                 | t when t = typeof<DateTimeOffset> ->
@@ -277,6 +279,8 @@ module internal Core =
                         JsonValueHelpers.getBool path jvalue :> obj
                     | t when t = typeof<string> ->
                         JsonValueHelpers.getString path jvalue :> obj
+                    | t when t = typeof<char> ->
+                        JsonValueHelpers.getChar path jvalue :> obj
                     | t when t = typeof<DateTime> ->
                         JsonValueHelpers.getDateTime CultureInfo.InvariantCulture path jvalue :> obj
                     | t when t = typeof<DateTimeOffset> ->

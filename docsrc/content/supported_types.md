@@ -23,6 +23,10 @@ string
 ------
 Represented as `string` in JSON.
 
+char
+----
+Represented as `string` with single character in JSON.
+
 bool
 ----
 Represented as `bool` in JSON.
