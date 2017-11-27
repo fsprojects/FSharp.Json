@@ -112,3 +112,35 @@ module Union =
         let json = Json.serialize(expected)
         let actual = Json.deserialize<SingleCaseRecord> json
         Assert.AreEqual(expected, actual)
+
+    type UnionWithOption =
+    | Main of string option
+    | Other
+
+    [<Test>]
+    let ``Union case with option serialization`` () =
+        let value = Main (Some "The string")
+        let actual = Json.serializeU value
+        let expected = """{"Main":"The string"}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union case with option deserialization`` () =
+        let json = """{"Main":"The string"}"""
+        let expected = Main (Some "The string")
+        let actual = Json.deserialize<UnionWithOption> json
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union case with option None serialization`` () =
+        let value = Main None
+        let actual = Json.serializeU value
+        let expected = """{"Main":null}"""
+        Assert.AreEqual(expected, actual)
+        
+    [<Test>]
+    let ``Union case with option None deserialization`` () =
+        let json = """{"Main":null}"""
+        let expected = Main None
+        let actual = Json.deserialize<UnionWithOption> json
+        Assert.AreEqual(expected, actual)

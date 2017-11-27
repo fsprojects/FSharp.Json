@@ -21,13 +21,20 @@ module Tuple =
         let expected = """{"value":["The string",123,true]}"""
         Assert.AreEqual(expected, actual)
 
-//    type TheTupleWithOption = {
-//        value: string*int option*bool
-//    }
-//
-//    [<Test>]
-//    let ``Tuple serialization`` () =
-//        let value = { TheTupleWithOption.value = ("The string", None, true) }
-//        let actual = Json.serializeU value
-//        let expected = """{"value":["The string",null,true]}"""
-//        Assert.AreEqual(expected, actual)
+    type TheTupleWithOption = {
+        value: string*int option*bool
+    }
+
+    [<Test>]
+    let ``Tuple with optional serialization`` () =
+        let value = { TheTupleWithOption.value = ("The string", None, true) }
+        let actual = Json.serializeU value
+        let expected = """{"value":["The string",null,true]}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Tuple with optional deserialization`` () =
+        let expected = { TheTupleWithOption.value = ("The string", None, true) }
+        let json = """{"value":["The string",null,true]}"""
+        let actual = Json.deserialize<TheTupleWithOption> json
+        Assert.AreEqual(expected, actual)
