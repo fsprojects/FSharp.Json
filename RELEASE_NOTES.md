@@ -1,3 +1,6 @@
+#### 0.3.1
+* Fixed FSharp.Core dependency to allow newer versions
+
 #### 0.3
 * Fix for tuples containing option types
 * Support for char type

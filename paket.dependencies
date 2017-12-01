@@ -8,7 +8,7 @@ source https://nuget.org/api/v2
 # To increase the minimum assumed F# version to F# 4.1, change to 
 #     nuget FSharp.Core ~> 4.1.0 redirects: force
 
-nuget FSharp.Core ~> 4.0.0.1 redirects: force
+nuget FSharp.Core >= 4.0.0.1 redirects: force
 
 group Build
   source https://nuget.org/api/v2
