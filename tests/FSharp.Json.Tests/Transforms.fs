@@ -39,3 +39,28 @@ module Transforms =
         let json = """{"value":1509922245}"""
         let actual = Json.deserialize<DateTimeOffsetRecord> json
         Assert.AreEqual(expected, actual)
+
+    type UriRecord = {
+        [<JsonField(Transform=typeof<Transforms.UriTransform>)>]
+        value : System.Uri
+    }
+
+    [<Test>]
+    let ``System.Uri as string serialization`` () =
+        let actual = Json.serializeU { UriRecord.value = Uri("http://localhost:8080/") }
+        let expected = """{"value":"http://localhost:8080/"}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``System.Uri as string deserialization`` () =
+        let expected = { UriRecord.value = new Uri("http://localhost:8080/") }
+        let json = """{"value":"http://localhost:8080/"}"""
+        let actual = Json.deserialize<UriRecord> json
+        Assert.AreEqual(expected, actual)
+
+    [<Test; ExpectedException("System.UriFormatException")>]
+    let ``Corrupted uri throws exception`` () =
+        let dummy = { UriRecord.value = new Uri("http://localhost:8080/") }
+        let json = """{"value":"/localhost:8080/"}""" // try corrupted uri value, should throw UriFormatException
+        let actual = Json.deserialize<UriRecord> json
+        Assert.AreEqual(dummy, actual)
