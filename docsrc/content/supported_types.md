@@ -8,7 +8,7 @@ int
 Represented as `number` in JSON.
 
 int64
------ 
+-----
 Represented as `number` in JSON.
 
 float
@@ -44,6 +44,10 @@ Could be represented as `number` epoch time using [transform](transform.html).
 Guid
 ----
 Represented as `string`.
+
+Uri
+----
+Represented as `string` when using the provided transformation attribute - see [transform](transform.html).
 
 Enum
 ----
