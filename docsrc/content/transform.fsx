@@ -44,6 +44,32 @@ let deserialized = Json.deserialize<DateTimeRecord> json
 
 (**
 
+System.Uri as string
+----------------------
+
+This transformer transforms a Uri to/from a string for serialization. On deserialization, the string value is
+handed to the System.Uri constructor. When the URI string is malformed, a UriFormatException might be thrown.
+Example use:
+
+
+*)
+#r "FSharp.Json.dll"
+open System
+open FSharp.Json
+
+// value will be represented as epoch time in JSON
+type UriRecord = {
+    [<JsonField(Transform=typeof<Transforms.UriTransform>)>]
+    value: Uri
+}
+
+let json = Json.serialize { UriRecord.value = Uri("http://localhost:8080/") }
+// json is """{"value":"http://localhost:8080/"}"""
+
+let deserialized = Json.deserialize<UriRecord> json
+// deserialized is { UriRecord.value = Uri("http://localhost:8080/") }
+
+(*
 Transform by default
 --------------------
 
