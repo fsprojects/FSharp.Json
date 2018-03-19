@@ -18,7 +18,7 @@ module Transforms =
             member x.toTargetType value = (fun (v: obj) -> int64(((v :?> DateTimeOffset) - DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan(0L))).TotalSeconds) :> obj) value
             member x.fromTargetType value = (fun (v: obj) -> DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan(0L)).Add(TimeSpan.FromSeconds(float(v :?> int64))) :> obj) value
 
-    /// Implementation of [ITypeTransform] converting DateTimeOffset into int64 as epoch time.
+    /// Implementation of [ITypeTransform] converting Uri into string.
     type UriTransform() =
         interface ITypeTransform with
             member x.targetType () = (fun _ -> typeof<string>) ()
