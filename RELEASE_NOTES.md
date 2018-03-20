@@ -1,3 +1,6 @@
+#### 0.3.2
+* Added Transform for Uri type
+
 #### 0.3.1
 * Fixed FSharp.Core dependency to allow newer versions
 
