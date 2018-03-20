@@ -5,8 +5,8 @@ open System.Reflection
 [<assembly: AssemblyTitleAttribute("FSharp.Json")>]
 [<assembly: AssemblyProductAttribute("FSharp.Json")>]
 [<assembly: AssemblyDescriptionAttribute("F# JSON Reflection based serialization library")>]
-[<assembly: AssemblyVersionAttribute("0.3.1")>]
-[<assembly: AssemblyFileVersionAttribute("0.3.1")>]
+[<assembly: AssemblyVersionAttribute("0.3.2")>]
+[<assembly: AssemblyFileVersionAttribute("0.3.2")>]
 [<assembly: AssemblyConfigurationAttribute("Release")>]
 do ()
 
@@ -14,6 +14,6 @@ module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "FSharp.Json"
     let [<Literal>] AssemblyProduct = "FSharp.Json"
     let [<Literal>] AssemblyDescription = "F# JSON Reflection based serialization library"
-    let [<Literal>] AssemblyVersion = "0.3.1"
-    let [<Literal>] AssemblyFileVersion = "0.3.1"
+    let [<Literal>] AssemblyVersion = "0.3.2"
+    let [<Literal>] AssemblyFileVersion = "0.3.2"
     let [<Literal>] AssemblyConfiguration = "Release"
