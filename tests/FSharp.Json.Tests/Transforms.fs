@@ -58,9 +58,8 @@ module Transforms =
         let actual = Json.deserialize<UriRecord> json
         Assert.AreEqual(expected, actual)
 
-    [<Test; ExpectedException("System.UriFormatException")>]
+    [<Test>]
     let ``Corrupted uri throws exception`` () =
         let dummy = { UriRecord.value = new Uri("http://localhost:8080/") }
-        let json = """{"value":"/localhost:8080/"}""" // try corrupted uri value, should throw UriFormatException
-        let actual = Json.deserialize<UriRecord> json
-        Assert.AreEqual(dummy, actual)
+        let json = """{"value":"/localhost:8080/"}"""
+        Assert.Throws<System.UriFormatException>(fun () -> Json.deserialize<UriRecord> json |> ignore) |> ignore
