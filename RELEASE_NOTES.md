@@ -1,3 +1,6 @@
+#### 0.3.3
+* Added .NET Core support
+
 #### 0.3.2
 * Added Transform for Uri type
 
