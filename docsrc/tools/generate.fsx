@@ -9,7 +9,7 @@
 // for binaries output to root bin folder please add the filename only to the 
 // referenceBinaries list below in order to generate documentation for the binaries.
 // (This is the original behaviour of ProjectScaffold prior to multi project support)
-let referenceBinaries = []
+let referenceBinaries = ["../../src/FSharp.Json/bin/Debug/net452/FSharp.Json.dll"]
 // Web site location for the generated documentation
 let website = "/FSharp.Json"
 
@@ -75,8 +75,7 @@ let copyFiles () =
 
 let binaries =
     let manuallyAdded = 
-        referenceBinaries 
-        |> List.map (fun b -> bin @@ b)
+        referenceBinaries
     
     let conventionBased = 
         directoryInfo bin 
