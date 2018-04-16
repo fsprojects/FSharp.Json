@@ -1,7 +1,7 @@
 init:
   - git config --global core.autocrlf input
 build_script:
-  - cmd: dotnet test
+  - cmd: dotnet test tests\FSharp.Json.Tests\FSharp.Json.Tests.fsproj
 test: off
 version: 0.0.1.{build}
 artifacts:
