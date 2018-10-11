@@ -1,3 +1,6 @@
+#### 0.3.4
+* Moved to .NET Standard
+
 #### 0.3.3
 * Added .NET Core support
 
