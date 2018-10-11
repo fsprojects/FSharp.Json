@@ -215,3 +215,4 @@ Target "Release" (fun _ ->
   ==> "KeepRunning"
 
 RunTargetOrDefault "GenerateDocs"
+
