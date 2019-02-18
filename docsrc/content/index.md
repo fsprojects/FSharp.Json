@@ -16,6 +16,7 @@ There are several available options to choose from:
  * [Json.Net aka Newtonsoft.Json](https://www.newtonsoft.com/json)
  * [Chiron](https://github.com/xyncro/chiron)
  * [JsonFSharp](https://github.com/PeteProgrammer/JsonFSharp)
+ * [Thoth.Json](https://mangelmaxime.github.io/Thoth/json/v2.html#code-sample)
  * Let me know what library I missed here
 
 While all of these libraries do provide some good functionality all of them seem to have a weakness.
