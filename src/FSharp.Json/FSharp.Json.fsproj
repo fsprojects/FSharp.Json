@@ -7,10 +7,10 @@
     <PackageLicenseUrl>https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://vsapronov.github.io/FSharp.Json</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/vsapronov/FSharp.Json/master/docs/files/img/logo.png</PackageIconUrl>
-    <Copyright>Copyright 2018</Copyright>
+    <Copyright>Copyright 2019</Copyright>
     <PackageTags>F# JSON serialization</PackageTags>
     <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
-    <Version>0.3.4</Version>
+    <Version>0.3.5</Version>
     <PackageReleaseNotes>Added .NET Core support</PackageReleaseNotes>
   </PropertyGroup>
 
