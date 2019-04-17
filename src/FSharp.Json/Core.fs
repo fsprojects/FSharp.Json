@@ -7,7 +7,6 @@ module internal Core =
     open System.Collections
     open FSharp.Json.Internalized.FSharp.Data
 
-    open Utils
     open Reflection
 
     let findAttributeMember<'T> (memberInfo: MemberInfo): 'T option =
@@ -27,16 +26,16 @@ module internal Core =
         theConstructor.Invoke([||]) :?> ITypeTransform
 
     let getJsonFieldProperty: PropertyInfo -> JsonField =
-        findAttributeMember<JsonField> >> someOrDefault<JsonField> JsonField.Default |> cacheResult
+        findAttributeMember<JsonField> >> Option.defaultValue JsonField.Default |> cacheResult
 
     let getJsonUnion: Type -> JsonUnion =
-        findAttributeMember<JsonUnion> >> someOrDefault<JsonUnion> JsonUnion.Default |> cacheResult
+        findAttributeMember<JsonUnion> >> Option.defaultValue JsonUnion.Default |> cacheResult
 
     let getJsonFieldUnionCase: UnionCaseInfo -> JsonField =
-        findAttributeCase<JsonField> >> someOrDefault<JsonField> JsonField.Default |> cacheResult
+        findAttributeCase<JsonField> >> Option.defaultValue JsonField.Default |> cacheResult
 
     let getJsonUnionCase: UnionCaseInfo -> JsonUnionCase =
-        findAttributeCase<JsonUnionCase> >> someOrDefault<JsonUnionCase> JsonUnionCase.Default |> cacheResult
+        findAttributeCase<JsonUnionCase> >> Option.defaultValue JsonUnionCase.Default |> cacheResult
     
     let getTransform: Type -> ITypeTransform = createTransform |> cacheResult
 
@@ -175,7 +174,7 @@ module internal Core =
                 values.Cast<Object>()
                 |> Seq.map (fun value -> 
                     serializeUnwrapOption (value.GetType()) JsonField.Default value)
-                |> Seq.map (someOrDefault JsonValue.Null)
+                |> Seq.map (Option.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeTupleItems (types: Type seq) (values: IEnumerable): JsonValue =
@@ -184,7 +183,7 @@ module internal Core =
                 |> Seq.zip types
                 |> Seq.map (fun (t, value) -> 
                     serializeUnwrapOption t JsonField.Default value)
-                |> Seq.map (someOrDefault JsonValue.Null)
+                |> Seq.map (Option.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeKvpEnumerable (kvps: IEnumerable): JsonValue =
@@ -194,7 +193,7 @@ module internal Core =
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
                     let jvalue = serializeUnwrapOption (value.GetType()) JsonField.Default value
-                    (key, someOrDefault JsonValue.Null jvalue)
+                    (key, Option.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
 
