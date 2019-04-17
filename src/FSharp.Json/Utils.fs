@@ -1,11 +1,5 @@
 ﻿namespace FSharp.Json
 
-module internal Utils =
-    let someOrDefault<'T> (defaultValue:'T) (arg:'T option): 'T =
-        match arg with
-        | Some arg -> arg
-        | None -> defaultValue
-
 module internal Conversions =
     open System
     open System.Globalization
