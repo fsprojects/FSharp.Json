@@ -44,6 +44,12 @@ module internal JsonValueHelpers =
         | JsonValue.Float value -> uint64 value
         | _ -> raiseWrongType path "uint64" jvalue
 
+    let getBigint (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> bigint value
+        | JsonValue.Float value -> bigint value
+        | _ -> raiseWrongType path "bigint" jvalue
+
     let getFloat (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Float value -> value
