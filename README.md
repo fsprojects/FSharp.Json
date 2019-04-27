@@ -134,7 +134,6 @@ Prefix `Ex` stands for "extended". Both of these functions take [JsonConfig](src
 There's convenient way to override default configuration by using `JsonConfig.create` function.
 All parameters of the function are optional and those that are provided override default values.
 
-Examples of how to create and use JsonConfig could be found on pages discussing corresponding features.
 For example, custom `jsonFieldNaming` could be found [here](#change-all-fields-names). 
 
 #### Unformatted JSON
@@ -176,7 +175,7 @@ obj | read [Untyped Data](#untyped-data) section
 
 When record type instance is serialized into JSON members names are used as JSON fields names.
 In some scenarios the JSON should have different fields names then F# record type.
-This page describes how FSharp.Json library provides JSON customization abilities.
+This section describes how FSharp.Json library provides JSON customization abilities.
 
 #### Change JSON field name
 
@@ -563,7 +562,7 @@ let deserialized = Json.deserialize<TheUnion> json
 
 ## Type Transform
 
-[Supported types](supported-types) page maps F# types into JSON types.
+[Supported types](supported-types) section maps F# types into JSON types.
 What if some data needed to be represented as a different type then the default JSON type?
 If changing type of the member in F# is not an option then type transform can help.
 
