@@ -152,10 +152,7 @@ Here's full list of F# types that are supported by FSharp.Json library.
 
 | F# Type | JSON Type |
 |:---|:---|
-int | number
-int64 | number
-float | number
-decimal | number
+sbyte<br>byte<br>int16<br>uint16<br>int<br>uint<br>int64<br>uint64<br>bigint<br>single<br>float<br>decimal | number
 string | string
 char | string
 bool | bool
@@ -168,8 +165,7 @@ option | option is not represented by itself<br>`None` value might be represente
 tuple | list
 record | object
 map | object
-array | list
-list | list
+array<br>list | list
 union | object with special structure<br>read more in [Unions](#unions) section
 obj | read [Untyped Data](#untyped-data) section
 
