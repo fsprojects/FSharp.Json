@@ -115,6 +115,8 @@ module internal Core =
                     JsonValue.Float (value :?> float)
                 | t when t = typeof<decimal> ->
                     JsonValue.Number (value :?> decimal)
+                | t when t = typeof<byte> ->
+                    JsonValue.Number (decimal (value :?> byte))
                 | t when t = typeof<bool> ->
                     JsonValue.Boolean (value :?> bool)
                 | t when t = typeof<string> ->
@@ -313,6 +315,8 @@ module internal Core =
                         JsonValueHelpers.getFloat path jvalue :> obj
                     | t when t = typeof<decimal> ->
                         JsonValueHelpers.getDecimal path jvalue :> obj
+                    | t when t = typeof<byte> ->
+                        JsonValueHelpers.getByte path jvalue :> obj
                     | t when t = typeof<bool> ->
                         JsonValueHelpers.getBool path jvalue :> obj
                     | t when t = typeof<string> ->
