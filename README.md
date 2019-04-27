@@ -69,19 +69,7 @@ The core of FSharp.Json library is located in single [Core.fs file][core].
 
 ## Documentation
 
-Following pages are describing main features and aspects of FSharp.Json:
-
- * [Basic Usage Example](#basic-example)
- * [API Overview](#api-overview)
- * [Supported Types](#supported-types)
- * [Fields Naming](#fields-naming)
- * [Null Safety](#null-safety)
- * [Enums](#enums)
- * [Unions](#unions)
- * [Type Transform](#transform)
- * [Untyped Data](#untyped-data)
-
-Each feature of FSharp.Json is thoroughly covered by [unit tests](tests/FSharp.Json.Tests).
+This document describe all details of FSharp.Json library. The source code also has thorough documentation in comments to main types. Each feature of FSharp.Json is thoroughly covered by [unit tests](tests/FSharp.Json.Tests).
 
 ## API Overview
 
