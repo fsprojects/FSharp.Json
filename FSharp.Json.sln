@@ -11,7 +11,6 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Json.Tests", "tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{C6675B8D-87AC-4C55-92B7-8C02DDAA38E0}"
 	ProjectSection(SolutionItems) = preProject
-		build.fsx = build.fsx
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
