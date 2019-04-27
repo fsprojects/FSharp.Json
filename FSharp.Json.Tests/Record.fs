@@ -10,6 +10,7 @@ module Record =
         theBool: bool
         theByte: byte
         theSByte: sbyte
+        theInt16: int16
         theInt: int
         theInt64: int64
         theFloat: float
@@ -27,6 +28,7 @@ module Record =
             theBool = true
             theByte = 123uy
             theSByte = 123y
+            theInt16 = 123s
             theInt = 123
             theInt64 = 123L
             theFloat = 123.123

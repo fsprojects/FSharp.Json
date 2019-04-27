@@ -107,6 +107,8 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType t value
                 match t with
+                | t when t = typeof<int16> ->
+                    JsonValue.Number (decimal (value :?> int16))
                 | t when t = typeof<int> ->
                     JsonValue.Number (decimal (value :?> int))
                 | t when t = typeof<int64> ->
@@ -309,6 +311,8 @@ module internal Core =
                 let t = getUntypedType path t jvalue
                 let jvalue =
                     match t with
+                    | t when t = typeof<int16> ->
+                        JsonValueHelpers.getInt16 path jvalue :> obj
                     | t when t = typeof<int> ->
                         JsonValueHelpers.getInt path jvalue :> obj
                     | t when t = typeof<int64> ->

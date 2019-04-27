@@ -8,6 +8,12 @@ module internal JsonValueHelpers =
     let raiseWrongType path typeName jvalue =
         raise(JsonDeserializationError(path, sprintf "Expected type %s is incompatible with jvalue: %A" typeName jvalue))
 
+    let getInt16 (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> int16 value
+        | JsonValue.Float value -> int16 value
+        | _ -> raiseWrongType path "int16" jvalue
+    
     let getInt (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Number value -> int value
