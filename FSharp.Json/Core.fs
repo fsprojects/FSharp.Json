@@ -121,6 +121,8 @@ module internal Core =
                     JsonValue.Number (decimal (value :?> uint64))
                 | t when t = typeof<bigint> ->
                     JsonValue.Number (decimal (value :?> bigint))
+                | t when t = typeof<single> ->
+                    JsonValue.Float (float (value :?> single))
                 | t when t = typeof<float> ->
                     JsonValue.Float (value :?> float)
                 | t when t = typeof<decimal> ->
@@ -333,6 +335,8 @@ module internal Core =
                         JsonValueHelpers.getUInt64 path jvalue :> obj
                     | t when t = typeof<bigint> ->
                         JsonValueHelpers.getBigint path jvalue :> obj
+                    | t when t = typeof<single> ->
+                        JsonValueHelpers.getSingle path jvalue :> obj
                     | t when t = typeof<float> ->
                         JsonValueHelpers.getFloat path jvalue :> obj
                     | t when t = typeof<decimal> ->

@@ -17,6 +17,7 @@ module Record =
         theInt64: int64
         theUInt64: uint64
         theBigint: bigint
+        theSingle: single
         theFloat: float
         theGuid: Guid
         theDateTime: DateTime
@@ -39,6 +40,7 @@ module Record =
             theInt64 = 123L
             theUInt64 = 123UL
             theBigint = 123I
+            theSingle = 123.0f
             theFloat = 123.123
             theGuid = Guid.NewGuid()
             theDateTime = DateTime.Now
