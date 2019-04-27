@@ -11,8 +11,11 @@ module Record =
         theByte: byte
         theSByte: sbyte
         theInt16: int16
+        theUInt16: uint16
         theInt: int
+        theUInt: uint32
         theInt64: int64
+        theUInt64: uint64
         theFloat: float
         theGuid: Guid
         theDateTime: DateTime
@@ -29,8 +32,11 @@ module Record =
             theByte = 123uy
             theSByte = 123y
             theInt16 = 123s
+            theUInt16 = 123us
             theInt = 123
+            theUInt = 123u 
             theInt64 = 123L
+            theUInt64 = 123UL
             theFloat = 123.123
             theGuid = Guid.NewGuid()
             theDateTime = DateTime.Now

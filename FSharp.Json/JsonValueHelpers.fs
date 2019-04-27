@@ -13,18 +13,36 @@ module internal JsonValueHelpers =
         | JsonValue.Number value -> int16 value
         | JsonValue.Float value -> int16 value
         | _ -> raiseWrongType path "int16" jvalue
-    
+
+    let getUInt16 (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> uint16 value
+        | JsonValue.Float value -> uint16 value
+        | _ -> raiseWrongType path "uint16" jvalue
+        
     let getInt (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Number value -> int value
         | JsonValue.Float value -> int value
         | _ -> raiseWrongType path "int" jvalue
 
+    let getUInt32 (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> uint32 value
+        | JsonValue.Float value -> uint32 value
+        | _ -> raiseWrongType path "uint32" jvalue
+    
     let getInt64 (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Number value -> int64 value
         | JsonValue.Float value -> int64 value
         | _ -> raiseWrongType path "int64" jvalue
+
+    let getUInt64 (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> uint64 value
+        | JsonValue.Float value -> uint64 value
+        | _ -> raiseWrongType path "uint64" jvalue
 
     let getFloat (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with

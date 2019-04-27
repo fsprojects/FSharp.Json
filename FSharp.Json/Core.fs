@@ -107,12 +107,18 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType t value
                 match t with
+                | t when t = typeof<uint16> ->
+                    JsonValue.Number (decimal (value :?> uint16))
                 | t when t = typeof<int16> ->
                     JsonValue.Number (decimal (value :?> int16))
                 | t when t = typeof<int> ->
                     JsonValue.Number (decimal (value :?> int))
+                | t when t = typeof<uint32> ->
+                    JsonValue.Number (decimal (value :?> uint32))
                 | t when t = typeof<int64> ->
                     JsonValue.Number (decimal (value :?> int64))
+                | t when t = typeof<uint64> ->
+                    JsonValue.Number (decimal (value :?> uint64))
                 | t when t = typeof<float> ->
                     JsonValue.Float (value :?> float)
                 | t when t = typeof<decimal> ->
@@ -313,10 +319,16 @@ module internal Core =
                     match t with
                     | t when t = typeof<int16> ->
                         JsonValueHelpers.getInt16 path jvalue :> obj
+                    | t when t = typeof<uint16> ->
+                        JsonValueHelpers.getUInt16 path jvalue :> obj
                     | t when t = typeof<int> ->
                         JsonValueHelpers.getInt path jvalue :> obj
+                    | t when t = typeof<uint32> ->
+                        JsonValueHelpers.getUInt32 path jvalue :> obj
                     | t when t = typeof<int64> ->
                         JsonValueHelpers.getInt64 path jvalue :> obj
+                    | t when t = typeof<uint64> ->
+                        JsonValueHelpers.getUInt64 path jvalue :> obj
                     | t when t = typeof<float> ->
                         JsonValueHelpers.getFloat path jvalue :> obj
                     | t when t = typeof<decimal> ->
