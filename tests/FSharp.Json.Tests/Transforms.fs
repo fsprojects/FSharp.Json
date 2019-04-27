@@ -60,6 +60,5 @@ module Transforms =
 
     [<Test>]
     let ``Corrupted uri throws exception`` () =
-        let dummy = { UriRecord.value = new Uri("http://localhost:8080/") }
-        let json = """{"value":"/localhost:8080/"}"""
+        let json = """{"value":"notreallyauri"}"""
         Assert.Throws<System.UriFormatException>(fun () -> Json.deserialize<UriRecord> json |> ignore) |> ignore
