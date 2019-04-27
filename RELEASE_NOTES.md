@@ -1,5 +1,8 @@
 # Release Notes
 
+## 0.3.6
+* Documentation cleanup
+
 ## 0.3.5
 * Moved to Release build
 
