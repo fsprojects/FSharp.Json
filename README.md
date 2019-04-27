@@ -29,6 +29,43 @@ printfn "%A" deserialized
 // deserialized is {stringMember = "some value"; intMember = 123;}
 ```
 
+## Table of Contents
+  - [Basic Usage Example](#basic-usage-example)
+  - [Table of Contents](#table-of-contents)
+  - [Why?](#why)
+  - [How?](#how)
+  - [Documentation](#documentation)
+  - [API Overview](#api-overview)
+      - [Advanced functions](#advanced-functions)
+      - [Configuration](#configuration)
+      - [Unformatted JSON](#unformatted-json)
+  - [Supported Types](#supported-types)
+  - [Customizing JSON Fields Names](#customizing-json-fields-names)
+      - [Change JSON field name](#change-json-field-name)
+      - [Change all fields names](#change-all-fields-names)
+  - [Null Safety](#null-safety)
+      - [Deserialization of null](#deserialization-of-null)
+      - [Customization of null deserialization](#customization-of-null-deserialization)
+      - [Serialization of None](#serialization-of-none)
+      - [Customization of None serialization](#customization-of-none-serialization)
+  - [Emums](#emums)
+      - [Customizing enum serialization](#customizing-enum-serialization)
+      - [Default enum behaviour](#default-enum-behaviour)
+  - [Unions](#unions)
+      - [Changing union case key](#changing-union-case-key)
+      - [Single case union](#single-case-union)
+      - [Union modes](#union-modes)
+  - [Type Transform](#type-transform)
+      - [DateTime as epoch time](#datetime-as-epoch-time)
+      - [System.Uri as string](#systemuri-as-string)
+      - [Transform by default](#transform-by-default)
+  - [Untyped Data](#untyped-data)
+      - [Serialization of obj](#serialization-of-obj)
+      - [Deserialization of obj](#deserialization-of-obj)
+  - [Release Notes](#release-notes)
+  - [Contributing and copyright](#contributing-and-copyright)
+  - [Maintainer(s)](#maintainers)
+
 ## Why?
 
 Why we need yet another F# JSON serialization library?
@@ -649,6 +686,36 @@ let data = Json.deserializeEx<ObjectRecord> config json
 // data is { ObjectRecord.value = "The string" }
 // value was deserialized as string because it was string in JSON
 ```
+
+## Release Notes
+
+#### 0.3.5
+* Moved to Release build
+
+#### 0.3.4
+* Moved to .NET Standard
+
+#### 0.3.3
+* Added .NET Core support
+
+#### 0.3.2
+* Added Transform for Uri type
+
+#### 0.3.1
+* Fixed FSharp.Core dependency to allow newer versions
+
+#### 0.3
+* Fix for tuples containing option types
+* Support for char type
+* Support for enums based on byte and char types
+* Configurable enum mode
+* Configurable unformatted setting
+
+#### 0.2 
+* Single case union as wrapped type 
+
+#### 0.1 
+* Initial release
 
 ## Contributing and copyright
 
