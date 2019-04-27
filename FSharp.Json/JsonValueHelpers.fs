@@ -38,6 +38,12 @@ module internal JsonValueHelpers =
         | JsonValue.Float value -> byte value
         | _ -> raiseWrongType path "byte" jvalue
 
+    let getSByte (path: JsonPath) (jvalue: JsonValue) =
+        match jvalue with
+        | JsonValue.Number value -> sbyte value
+        | JsonValue.Float value -> sbyte value
+        | _ -> raiseWrongType path "sbyte" jvalue
+    
     let getBool (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Boolean value -> value
