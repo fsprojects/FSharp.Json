@@ -185,3 +185,5 @@ docsrc/content/release-notes.md
 .fake
 docsrc/tools/FSharp.Formatting.svclog
 docs/
+
+.idea
