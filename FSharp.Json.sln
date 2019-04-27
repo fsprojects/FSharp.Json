@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Json", "src\FSharp.Json\FSharp.Json.fsproj", "{8C80EE87-ECC6-4BD1-80F4-849FB4FF5B45}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Json", "FSharp.Json\FSharp.Json.fsproj", "{8C80EE87-ECC6-4BD1-80F4-849FB4FF5B45}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{786DD151-3536-4F63-9D33-8ACA2403BB6E}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Json.Tests", "tests\FSharp.Json.Tests\FSharp.Json.Tests.fsproj", "{5D95196B-06AF-4158-9FF0-FAF132900A21}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharp.Json.Tests", "FSharp.Json.Tests\FSharp.Json.Tests.fsproj", "{5D95196B-06AF-4158-9FF0-FAF132900A21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{C6675B8D-87AC-4C55-92B7-8C02DDAA38E0}"
 	ProjectSection(SolutionItems) = preProject

@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.3.7
+* Added support for numeric types: byte, sbyte, int16, uint16, uint, uint64, bigint
+* Added support for floating point single type
+
 ## 0.3.6
 * Documentation cleanup
 

@@ -8,8 +8,16 @@ module Record =
         theString: string
         theDecimal: decimal
         theBool: bool
+        theByte: byte
+        theSByte: sbyte
+        theInt16: int16
+        theUInt16: uint16
         theInt: int
+        theUInt: uint32
         theInt64: int64
+        theUInt64: uint64
+        theBigint: bigint
+        theSingle: single
         theFloat: float
         theGuid: Guid
         theDateTime: DateTime
@@ -23,8 +31,16 @@ module Record =
             theString = "The string"
             theDecimal = 123M
             theBool = true
+            theByte = 123uy
+            theSByte = 123y
+            theInt16 = 123s
+            theUInt16 = 123us
             theInt = 123
+            theUInt = 123u 
             theInt64 = 123L
+            theUInt64 = 123UL
+            theBigint = 123I
+            theSingle = 123.0f
             theFloat = 123.123
             theGuid = Guid.NewGuid()
             theDateTime = DateTime.Now
