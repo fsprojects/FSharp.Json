@@ -4,13 +4,11 @@
 	  <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Description>F# JSON Reflection based serialization library</Description>
     <Authors>vsapronov</Authors>
-    <PackageLicenseUrl>https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/vsapronov/FSharp.Json</PackageProjectUrl>
     <Copyright>Copyright 2019</Copyright>
     <PackageTags>F# JSON serialization</PackageTags>
     <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
     <Version>0.3.7</Version>
-    <PackageReleaseNotes>Documentation Cleanup</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
