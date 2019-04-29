@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Json\FSharp.Json.fsproj" />
+    <ProjectReference Include="..\FSharp.Json\FSharp.Json.fsproj" />
   </ItemGroup>
 
 </Project>

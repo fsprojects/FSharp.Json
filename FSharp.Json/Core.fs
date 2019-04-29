@@ -7,7 +7,6 @@ module internal Core =
     open System.Collections
     open FSharp.Json.Internalized.FSharp.Data
 
-    open Utils
     open Reflection
 
     let findAttributeMember<'T> (memberInfo: MemberInfo): 'T option =
@@ -27,16 +26,16 @@ module internal Core =
         theConstructor.Invoke([||]) :?> ITypeTransform
 
     let getJsonFieldProperty: PropertyInfo -> JsonField =
-        findAttributeMember<JsonField> >> someOrDefault<JsonField> JsonField.Default |> cacheResult
+        findAttributeMember<JsonField> >> Option.defaultValue JsonField.Default |> cacheResult
 
     let getJsonUnion: Type -> JsonUnion =
-        findAttributeMember<JsonUnion> >> someOrDefault<JsonUnion> JsonUnion.Default |> cacheResult
+        findAttributeMember<JsonUnion> >> Option.defaultValue JsonUnion.Default |> cacheResult
 
     let getJsonFieldUnionCase: UnionCaseInfo -> JsonField =
-        findAttributeCase<JsonField> >> someOrDefault<JsonField> JsonField.Default |> cacheResult
+        findAttributeCase<JsonField> >> Option.defaultValue JsonField.Default |> cacheResult
 
     let getJsonUnionCase: UnionCaseInfo -> JsonUnionCase =
-        findAttributeCase<JsonUnionCase> >> someOrDefault<JsonUnionCase> JsonUnionCase.Default |> cacheResult
+        findAttributeCase<JsonUnionCase> >> Option.defaultValue JsonUnionCase.Default |> cacheResult
     
     let getTransform: Type -> ITypeTransform = createTransform |> cacheResult
 
@@ -108,14 +107,30 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType t value
                 match t with
+                | t when t = typeof<uint16> ->
+                    JsonValue.Number (decimal (value :?> uint16))
+                | t when t = typeof<int16> ->
+                    JsonValue.Number (decimal (value :?> int16))
                 | t when t = typeof<int> ->
                     JsonValue.Number (decimal (value :?> int))
+                | t when t = typeof<uint32> ->
+                    JsonValue.Number (decimal (value :?> uint32))
                 | t when t = typeof<int64> ->
                     JsonValue.Number (decimal (value :?> int64))
+                | t when t = typeof<uint64> ->
+                    JsonValue.Number (decimal (value :?> uint64))
+                | t when t = typeof<bigint> ->
+                    JsonValue.Number (decimal (value :?> bigint))
+                | t when t = typeof<single> ->
+                    JsonValue.Float (float (value :?> single))
                 | t when t = typeof<float> ->
                     JsonValue.Float (value :?> float)
                 | t when t = typeof<decimal> ->
                     JsonValue.Number (value :?> decimal)
+                | t when t = typeof<byte> ->
+                    JsonValue.Number (decimal (value :?> byte))
+                | t when t = typeof<sbyte> ->
+                    JsonValue.Number (decimal (value :?> sbyte))
                 | t when t = typeof<bool> ->
                     JsonValue.Boolean (value :?> bool)
                 | t when t = typeof<string> ->
@@ -175,7 +190,7 @@ module internal Core =
                 values.Cast<Object>()
                 |> Seq.map (fun value -> 
                     serializeUnwrapOption (value.GetType()) JsonField.Default value)
-                |> Seq.map (someOrDefault JsonValue.Null)
+                |> Seq.map (Option.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeTupleItems (types: Type seq) (values: IEnumerable): JsonValue =
@@ -184,7 +199,7 @@ module internal Core =
                 |> Seq.zip types
                 |> Seq.map (fun (t, value) -> 
                     serializeUnwrapOption t JsonField.Default value)
-                |> Seq.map (someOrDefault JsonValue.Null)
+                |> Seq.map (Option.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeKvpEnumerable (kvps: IEnumerable): JsonValue =
@@ -194,7 +209,7 @@ module internal Core =
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
                     let jvalue = serializeUnwrapOption (value.GetType()) JsonField.Default value
-                    (key, someOrDefault JsonValue.Null jvalue)
+                    (key, Option.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
 
@@ -306,14 +321,30 @@ module internal Core =
                 let t = getUntypedType path t jvalue
                 let jvalue =
                     match t with
+                    | t when t = typeof<int16> ->
+                        JsonValueHelpers.getInt16 path jvalue :> obj
+                    | t when t = typeof<uint16> ->
+                        JsonValueHelpers.getUInt16 path jvalue :> obj
                     | t when t = typeof<int> ->
                         JsonValueHelpers.getInt path jvalue :> obj
+                    | t when t = typeof<uint32> ->
+                        JsonValueHelpers.getUInt32 path jvalue :> obj
                     | t when t = typeof<int64> ->
                         JsonValueHelpers.getInt64 path jvalue :> obj
+                    | t when t = typeof<uint64> ->
+                        JsonValueHelpers.getUInt64 path jvalue :> obj
+                    | t when t = typeof<bigint> ->
+                        JsonValueHelpers.getBigint path jvalue :> obj
+                    | t when t = typeof<single> ->
+                        JsonValueHelpers.getSingle path jvalue :> obj
                     | t when t = typeof<float> ->
                         JsonValueHelpers.getFloat path jvalue :> obj
                     | t when t = typeof<decimal> ->
                         JsonValueHelpers.getDecimal path jvalue :> obj
+                    | t when t = typeof<byte> ->
+                        JsonValueHelpers.getByte path jvalue :> obj
+                    | t when t = typeof<sbyte> ->
+                        JsonValueHelpers.getSByte path jvalue :> obj
                     | t when t = typeof<bool> ->
                         JsonValueHelpers.getBool path jvalue :> obj
                     | t when t = typeof<string> ->

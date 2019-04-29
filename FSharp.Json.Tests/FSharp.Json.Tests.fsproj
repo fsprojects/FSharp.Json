@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AsJson.fs" />
+    <Compile Include="Collections.fs" />
+    <Compile Include="DateTimeFormat.fs" />
+    <Compile Include="Default.fs" />
+    <Compile Include="Enum.fs" />
+    <Compile Include="Map.fs" />
+    <Compile Include="Namings.fs" />
+    <Compile Include="Object.fs" />
+    <Compile Include="Option.fs" />
+    <Compile Include="Record.fs" />
+    <Compile Include="Transforms.fs" />
+    <Compile Include="Tuple.fs" />
+    <Compile Include="Union.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FSharp.Json\FSharp.Json.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
+    <PackageReference Include="Nunit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+  </ItemGroup>
+
+</Project>

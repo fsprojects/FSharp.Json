@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Description>F# JSON Reflection based serialization library</Description>
+    <Authors>vsapronov</Authors>
+    <PackageProjectUrl>https://github.com/vsapronov/FSharp.Json</PackageProjectUrl>
+    <Copyright>Copyright 2019</Copyright>
+    <PackageTags>F# JSON serialization</PackageTags>
+    <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
+    <Version>0.3.7</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
+    <DocumentationFile>bin\Release\net452\FSharp.Json.XML</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net452|AnyCPU'">
+    <DocumentationFile>bin\Debug\net452\FSharp.Json.XML</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="TextConversions.fs" />
+    <Compile Include="JsonValue.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="InterfaceTypes.fs" />
+    <Compile Include="JsonValueHelpers.fs" />
+    <Compile Include="Reflection.fs" />
+    <Compile Include="Core.fs" />
+    <Compile Include="Transforms.fs" />
+    <Compile Include="Interface.fs" />
+  </ItemGroup>
+
+  <ItemGroup />
+
+</Project>
