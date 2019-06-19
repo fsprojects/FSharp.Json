@@ -48,7 +48,7 @@ printfn "%A" deserialized
       - [Customization of null deserialization](#customization-of-null-deserialization)
       - [Serialization of None](#serialization-of-none)
       - [Customization of None serialization](#customization-of-none-serialization)
-  - [Emums](#emums)
+  - [Enums](#enums)
       - [Customizing enum serialization](#customizing-enum-serialization)
       - [Default enum behaviour](#default-enum-behaviour)
   - [Unions](#unions)
@@ -357,7 +357,7 @@ printfn "%s" json
 // json is: """{}"""
 ```
 
-## Emums
+## Enums
 
 By default enum value is represented as `string` that is enum member name.
 
