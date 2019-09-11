@@ -229,7 +229,9 @@ module internal Core =
                     let caseType = types.[0]
                     serializeUnwrapOptionWithNull caseType jsonField caseValue
                 | _ ->
-                    serializeTupleItems types values
+                    let props: PropertyInfo array = caseInfo.GetFields()
+                    let fields = props |> Array.map (serializeProperty theunion) |> Array.choose id
+                    JsonValue.Record fields
             let unionCases = getUnionCases caseInfo.DeclaringType
             match unionCases.Length with
             | 1 -> jvalue
@@ -519,7 +521,17 @@ module internal Core =
                             [| propValue |]
                         | _ ->
                             let propsTypes = props |> Array.map (fun p -> p.PropertyType)
-                            deserializeTupleElements casePath propsTypes fieldValue
+                            match fieldValue with
+                            | JsonValue.Record(jsonFields) ->
+                                let fields = jsonFields |> Map.ofArray
+                                props
+                                |> Array.map(fun prop ->
+                                    match prop.Name |> fields.TryFind with
+                                    | Some value ->
+                                        deserializeUnwrapOption path prop.PropertyType JsonField.Default (Some value)
+                                    | None -> failDeserialization path "Failed to parse union from JSON because field %s of case %s is missing." prop.Name caseInfo.Name
+                                )
+                            | _ -> failDeserialization path "Failed to parse union from JSON that is not object."
                     FSharpValue.MakeUnion (caseInfo, values)
                 | _ -> failDeserialization path "Failed to parse union from JSON that is not object."
 

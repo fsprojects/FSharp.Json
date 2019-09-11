@@ -9,7 +9,7 @@ module Union =
 
     type TheUnion =
     | OneFieldCase of string
-    | ManyFieldsCase of string*int
+    | ManyFieldsCase of field1:string*field2:int
     | RecordCase of TheRecord
 
     [<Test>]
@@ -20,8 +20,22 @@ module Union =
         Assert.AreEqual(expected, actual)
 
     [<Test>]
+    let ``Union two field case serialization`` () =
+        let value = ManyFieldsCase("The string", 2)
+        let actual = Json.serializeU value
+        let expected = """{"ManyFieldsCase":{"field1":"The string","field2":2}}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
     let ``Union one field case deserialization`` () =
         let expected = OneFieldCase "The string"
+        let json = Json.serialize(expected)
+        let actual = Json.deserialize<TheUnion> json
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union two field case deserialization`` () =
+        let expected = ManyFieldsCase("The string", 2)
         let json = Json.serialize(expected)
         let actual = Json.deserialize<TheUnion> json
         Assert.AreEqual(expected, actual)
