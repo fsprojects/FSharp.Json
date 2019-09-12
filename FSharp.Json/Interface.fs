@@ -39,6 +39,11 @@ module Json =
         let value = JsonValue.Parse(json)
         (Core.deserialize config JsonPath.Root typeof<'T> value) :?> 'T
 
+    let deserializeExDynamic (typ: Type) (config: JsonConfig) (json: string): obj =
+        let value = JsonValue.Parse(json)
+        Core.deserialize config JsonPath.Root typ value
+
+
     /// Serailizes F# object into JSON. Uses default [JsonConfig].
     let serialize (theobj: obj) = serializeEx JsonConfig.Default theobj
 
@@ -49,3 +54,6 @@ module Json =
 
     /// Deserailizes JSON into F# type provided as generic parameter. Uses default [JsonConfig].
     let deserialize<'T> (json: string) = deserializeEx<'T> JsonConfig.Default json
+
+    /// Deserailizes JSON into F# type provided as generic parameter. Uses default [JsonConfig].
+    let deserializeDynamic typ (json: string) = deserializeExDynamic typ JsonConfig.Default json
