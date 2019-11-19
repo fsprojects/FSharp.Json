@@ -53,6 +53,7 @@ printfn "%A" deserialized
       - [Default enum behaviour](#default-enum-behaviour)
   - [Unions](#unions)
       - [Changing union case key](#changing-union-case-key)
+      - [Union case without fields](#union-case-without-fields)
       - [Single case union](#single-case-union)
       - [Union modes](#union-modes)
   - [Type Transform](#type-transform)
@@ -529,6 +530,35 @@ let json = Json.serialize data
 
 let deserialized = Json.deserialize<TheRecord> json
 // deserialized is { TheRecord.value = SingleCase "The string" }
+```
+
+#### Union case without fields
+
+When union case does not have fields then the union value is represented by string value of the case name itself.
+
+Here's example of serialization union case without fields:
+
+```fsharp
+#r "FSharp.Json.dll"
+open FSharp.Json
+
+// Case NoFieldCase does not have any fields
+type TheUnion =
+| NoFieldCase
+| SingleCase of string
+
+type TheRecord = {
+    // value will be a string represting NoFieldCase
+    value: TheUnion
+}
+
+let data = { TheRecord.value = NoFieldCase }
+
+let json = Json.serialize data
+// json is """{"value":"NoFieldCase"}"""
+
+let deserialized = Json.deserialize<TheRecord> json
+// deserialized is { TheRecord.value = NoFieldCase }
 ```
 
 #### Union modes

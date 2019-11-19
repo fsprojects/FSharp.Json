@@ -8,10 +8,36 @@ module Union =
     }
 
     type TheUnion =
+    | NoFieldCase
     | OneFieldCase of string
     | ManyFieldsCase of string*int
     | RecordCase of TheRecord
+        
+    type OtherRecord = {
+        Union: TheUnion
+    }
+        
+    [<Test>]
+    let ``No field case serialization`` () =
+        let value = NoFieldCase
+        let actual = Json.serializeU value
+        let expected = "\"NoFieldCase\""
+        Assert.AreEqual(expected, actual)
 
+    [<Test>]
+    let ``No field case serialization in record`` () =
+        let value = { OtherRecord.Union = NoFieldCase }
+        let actual = Json.serializeU value
+        let expected = """{"Union":"NoFieldCase"}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union no field case deserialization`` () =
+        let expected = { OtherRecord.Union = NoFieldCase }
+        let json = Json.serialize(expected)
+        let actual = Json.deserialize<OtherRecord> json
+        Assert.AreEqual(expected, actual)
+        
     [<Test>]
     let ``Union one field case serialization`` () =
         let value = OneFieldCase "The string"

@@ -220,30 +220,34 @@ module internal Core =
 
         let serializeUnion (t: Type) (theunion: obj): JsonValue =
             let caseInfo, values = FSharpValue.GetUnionFields(theunion, t)
-            let jsonField = getJsonFieldUnionCase caseInfo
-            let types = caseInfo.GetFields() |> Array.map (fun p -> p.PropertyType)
-            let jvalue =
-                match values.Length with
-                | 1 ->
-                    let caseValue = values.[0]
-                    let caseType = types.[0]
-                    serializeUnwrapOptionWithNull caseType jsonField caseValue
-                | _ ->
-                    serializeTupleItems types values
-            let unionCases = getUnionCases caseInfo.DeclaringType
-            match unionCases.Length with
-            | 1 -> jvalue
+            let jsonUnionCase = getJsonUnionCase caseInfo
+            let jsonUnion = getJsonUnion caseInfo.DeclaringType
+            let theCase = getJsonUnionCaseName config jsonUnion jsonUnionCase caseInfo
+
+            match values.Length with
+            | 0 -> JsonValue.String theCase
             | _ ->
-                let jsonUnionCase = getJsonUnionCase caseInfo
-                let jsonUnion = getJsonUnion caseInfo.DeclaringType
-                let theCase = getJsonUnionCaseName config jsonUnion jsonUnionCase caseInfo
-                match jsonUnion.Mode with
-                | UnionMode.CaseKeyAsFieldName -> JsonValue.Record [| (theCase, jvalue) |]
-                | UnionMode.CaseKeyAsFieldValue ->
-                    let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
-                    let jvalue = (jsonUnion.CaseValueField, jvalue)
-                    JsonValue.Record [| jkey; jvalue |]
-                | mode -> failSerialization <| sprintf "Failed to serialize union, unsupported union mode: %A" mode
+                let jsonField = getJsonFieldUnionCase caseInfo
+                let types = caseInfo.GetFields() |> Array.map (fun p -> p.PropertyType)
+                let jvalue =
+                    match values.Length with
+                    | 1 ->
+                        let caseValue = values.[0]
+                        let caseType = types.[0]
+                        serializeUnwrapOptionWithNull caseType jsonField caseValue
+                    | _ ->
+                        serializeTupleItems types values
+                let unionCases = getUnionCases caseInfo.DeclaringType
+                match unionCases.Length with
+                | 1 -> jvalue
+                | _ ->
+                    match jsonUnion.Mode with
+                    | UnionMode.CaseKeyAsFieldName -> JsonValue.Record [| (theCase, jvalue) |]
+                    | UnionMode.CaseKeyAsFieldValue ->
+                        let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
+                        let jvalue = (jsonUnion.CaseValueField, jvalue)
+                        JsonValue.Record [| jkey; jvalue |]
+                    | mode -> failSerialization <| sprintf "Failed to serialize union, unsupported union mode: %A" mode
 
         match t with
         | t when isRecord t -> serializeRecord t value
@@ -479,6 +483,13 @@ module internal Core =
                 FSharpValue.MakeUnion (caseInfo, values)
             | _ ->
                 match jvalue with
+                | JsonValue.String fieldName ->
+                    let caseInfo = unionCases |> Array.tryFind (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
+                    let caseInfo =
+                        match caseInfo with
+                        | Some caseInfo -> caseInfo
+                        | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case: %s." fieldName
+                    FSharpValue.MakeUnion (caseInfo, null)
                 | JsonValue.Record fields ->
                     let fieldName, fieldValue =
                         match jsonUnion.Mode with
