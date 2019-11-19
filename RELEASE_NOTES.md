@@ -1,5 +1,8 @@
 # Release Notes
 
+## 0.4.0
+* Fixed no fields union case (de)serialization - not backward compatible.
+
 ## 0.3.7
 * Added support for numeric types: byte, sbyte, int16, uint16, uint, uint64, bigint
 * Added support for floating point single type
