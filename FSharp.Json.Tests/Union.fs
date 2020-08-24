@@ -104,6 +104,13 @@ module Union =
         Assert.AreEqual(expected, actual)
 
     [<Test>]
+    let ``Union key-value deserialization (more than 2 fields)`` () =
+        let expected = TheAnnotatedUnion.StringCase "The string"
+        let json = """{"casekey":"StringCase","casevalue":"The string","unrelated_property":"unrelated_value"}"""
+        let actual = Json.deserialize<TheAnnotatedUnion> json
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
     let ``Union cases serialization with snake case naming`` () =
         let value = OneFieldCase "The string"
         let config = JsonConfig.create(unformatted = true, jsonFieldNaming = Json.snakeCase)
