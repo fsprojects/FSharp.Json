@@ -498,8 +498,8 @@ module internal Core =
                                 failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be 1 field." fields.Length
                             fields.[0]
                         | UnionMode.CaseKeyAsFieldValue ->
-                            if fields.Length <> 2 then
-                                failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be 2 fields." fields.Length
+                            if fields.Length < 2 then
+                                failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be at least 2 fields." fields.Length
                             let caseKeyField = fields |> Seq.tryFind (fun f -> fst f = jsonUnion.CaseKeyField)
                             let caseKeyField =
                                 match caseKeyField with
