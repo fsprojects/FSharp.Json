@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>F# JSON Reflection based serialization library</Description>
     <Authors>vsapronov;NicoVIII</Authors>
     <PackageProjectUrl>https://github.com/NicoVIII/FSharp.Json</PackageProjectUrl>
@@ -10,7 +10,6 @@
     <RepositoryUrl>https://github.com/NicoVIII/FSharp.Json</RepositoryUrl>
     <Version>0.4.0</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="TextConversions.fs" />
     <Compile Include="JsonValue.fs" />
@@ -22,5 +21,5 @@
     <Compile Include="Transforms.fs" />
     <Compile Include="Interface.fs" />
   </ItemGroup>
-
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

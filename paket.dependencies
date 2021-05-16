@@ -1,0 +1,6 @@
+source https://www.nuget.org/api/v2
+
+nuget FSharp.Core
+nuget Microsoft.NET.Test.Sdk 15.6.2
+nuget Nunit 3.13.2
+nuget NUnit3TestAdapter 3.17.0

@@ -41,7 +41,7 @@ module Collections =
 
     [<Test>]
     let ``List empty serialization/deserialization`` () =
-        let expected = []
+        let expected = List.empty<string>
         let json = Json.serialize (expected)
         let actual = Json.deserialize<string list> json
         Assert.AreEqual(expected, actual)

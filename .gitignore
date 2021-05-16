@@ -4,3 +4,5 @@ bin/
 obj/
 *.DotSettings.user
 .ionide/
+packages/
+paket-files/
