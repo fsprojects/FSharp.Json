@@ -2,13 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>F# JSON Reflection based serialization library</Description>
-    <Authors>vsapronov;NicoVIII</Authors>
-    <PackageProjectUrl>https://github.com/NicoVIII/FSharp.Json</PackageProjectUrl>
-    <Copyright>Copyright 2019</Copyright>
-    <PackageTags>F# JSON serialization</PackageTags>
-    <RepositoryUrl>https://github.com/NicoVIII/FSharp.Json</RepositoryUrl>
-    <Version>0.4.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TextConversions.fs" />

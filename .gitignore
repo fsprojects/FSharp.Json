@@ -2,6 +2,7 @@
 .vs/
 bin/
 obj/
+out/
 *.DotSettings.user
 .ionide/
 packages/
