@@ -165,7 +165,8 @@ module internal Core =
                     || isMap t
                     || isRecord t
                     || isUnion t
-                    || isSet t -> serialize config t value
+                    || isSet t
+                    || isResizeArray t -> serialize config t value
                 | _ ->
                     failSerialization
                     <| sprintf "Unknown type: %s" t.Name
@@ -305,6 +306,7 @@ module internal Core =
         | t when isTuple t -> serializeTupleItems (getTupleElements t) (FSharpValue.GetTupleFields value)
         | t when isUnion t -> serializeUnion t value
         | t when isSet t -> serializeEnumerable (value :?> IEnumerable)
+        | t when isResizeArray t -> serializeEnumerable (value :?> IEnumerable)
         | t ->
             let msg =
                 sprintf
@@ -414,7 +416,8 @@ module internal Core =
                         || isMap t
                         || isRecord t
                         || isUnion t
-                        || isSet t -> deserialize config path t jvalue
+                        || isSet t
+                        || isResizeArray t -> deserialize config path t jvalue
                     | _ ->
                         failDeserialization path
                         <| sprintf "Not supported type: %s" t.Name
@@ -498,6 +501,19 @@ module internal Core =
 
                 arrayValues |> List.ofSeq |> createSet itemType
             | _ -> failDeserialization path "Failed to parse set from JSON that is not array."
+
+        let deserializeResizeArray (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
+            match jvalue with
+            | JsonValue.Array jvalues ->
+                let itemType = getResizeArrayItemType t
+
+                let arrayValues =
+                    deserializeArrayItems path itemType jvalues
+
+                arrayValues
+                |> List.ofSeq
+                |> createResizeArray itemType
+            | _ -> failDeserialization path "Failed to parse resize array from JSON that is not array."
 
         let deserializeArray (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
             match jvalue with
@@ -714,6 +730,7 @@ module internal Core =
         | t when isTuple t -> deserializeTuple path t jvalue
         | t when isUnion t -> deserializeUnion path t jvalue
         | t when isSet t -> deserializeSet path t jvalue
+        | t when isResizeArray t -> deserializeResizeArray path t jvalue
         | _ ->
             failDeserialization path
             <| sprintf
