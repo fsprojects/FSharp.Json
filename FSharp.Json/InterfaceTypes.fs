@@ -6,11 +6,11 @@ open System.Text
 /// Transformation between types
 type ITypeTransform =
     /// Represents target type to transform to
-    abstract member targetType: unit -> Type
+    abstract member targetType : unit -> Type
     /// Transform to target type
-    abstract member toTargetType: obj -> obj
+    abstract member toTargetType : obj -> obj
     /// Transform from target type
-    abstract member fromTargetType: obj -> obj
+    abstract member fromTargetType : obj -> obj
 
 /// Controls Enum serialization
 type EnumMode =
@@ -21,8 +21,8 @@ type EnumMode =
     /// Serialize Enum value as it's value
     | Value = 2
 
-/// Attribute customizing serialization of members 
-type JsonField (name: string) =
+/// Attribute customizing serialization of members
+type JsonField(name: string) =
     inherit Attribute()
     /// Field name in JSON. Use null value to use record member name. Default value is null.
     member val public Name: string = name with get, set
@@ -37,10 +37,10 @@ type JsonField (name: string) =
     /// Controls default DateTime and DateTimeOffset formats. Default value is "yyyy-MM-ddTHH:mm:ss.fffffffK".
     member val public DateTimeFormat: string = "yyyy-MM-ddTHH:mm:ss.fffffffK" with get, set
     /// Creates default [JsonField] instance
-    new () = JsonField(null)
-with
-    /// Default [JsonField].
-    static member Default = JsonField()
+    new() = JsonField(null)
+    with
+        /// Default [JsonField].
+        static member Default = JsonField()
 
 /// Attribute customizing serialization of union types
 type UnionMode =
@@ -50,7 +50,7 @@ type UnionMode =
     | CaseKeyAsFieldValue = 1
 
 /// Attribute customizing serialization of union types
-type JsonUnion () =
+type JsonUnion() =
     inherit Attribute()
     /// Controls how to serialize cases of union type
     member val public Mode: UnionMode = UnionMode.CaseKeyAsFieldName with get, set
@@ -58,20 +58,20 @@ type JsonUnion () =
     member val public CaseKeyField: string = "case" with get, set
     /// Field name used for case value. Applicable only when Mode set to CaseKeyAsFieldValue. Default value is "value".
     member val public CaseValueField: string = "value" with get, set
-with
-    /// Default [JsonUnion].
-    static member Default = JsonUnion()
+    with
+        /// Default [JsonUnion].
+        static member Default = JsonUnion()
 
 /// Attribute customizing serialization of union cases
-type JsonUnionCase (case: string) =
+type JsonUnionCase(case: string) =
     inherit Attribute()
     /// Value that should be used for attributed union case. Default is null which means use F# case name.
     member val public Case: string = case with get, set
     /// Creates new [JsonUnionCase]
-    new () = JsonUnionCase(null)
-with
-    /// Default [JsonUnion].
-    static member Default = JsonUnionCase()
+    new() = JsonUnionCase(null)
+    with
+        /// Default [JsonUnion].
+        static member Default = JsonUnionCase()
 
 
 /// Represents one item in [JsonPath]
@@ -82,28 +82,33 @@ type JsonPathItem =
     | ArrayItem of int
 
 /// Represents path in JSON structure
-type JsonPath = {
-    /// Path represented as list of [JsonPathItem].
-    path: JsonPathItem list
-}
-with
+type JsonPath =
+    {
+      /// Path represented as list of [JsonPathItem].
+      path: JsonPathItem list }
     /// JSON root path.
     static member Root = { JsonPath.path = [] }
     /// Creates new path from this by adding item to the end.
-    member this.createNew (item: JsonPathItem) = { JsonPath.path = this.path @ [item] }
+    member this.createNew(item: JsonPathItem) =
+        { JsonPath.path = this.path @ [ item ] }
     /// Returns string representing JSON path.
-    member this.toString () =
+    member this.toString() =
         match this.path.Length with
         | 0 -> ""
         | _ ->
             let value = new StringBuilder()
-            this.path |> List.iteri (fun index location ->
-                match location with
-                | Field theProperty ->
-                    if index <> 0 then value.Append "." |> ignore
-                    value.Append theProperty |> ignore
-                | ArrayItem item -> item |> sprintf "[%i]" |> value.Append |> ignore
-            )
+
+            this.path
+            |> List.iteri
+                (fun index location ->
+                    match location with
+                    | Field theProperty ->
+                        if index <> 0 then
+                            value.Append "." |> ignore
+
+                        value.Append theProperty |> ignore
+                    | ArrayItem item -> item |> sprintf "[%i]" |> value.Append |> ignore)
+
             value.ToString()
 
 /// Fatal error during JSON serialization
@@ -134,31 +139,35 @@ type DeserializeOption =
 type JsonFieldNaming = string -> string
 
 /// Configuration for JSON serialization/deserialization
-type JsonConfig = {
-    /// Generates unformatted JSON if set to true. Default is false.
-    unformatted: bool
-    /// Controls serialization of option None value. Default is SerializeNone.Null.
-    serializeNone: SerializeNone
-    /// Controls deserialization of option types. Default is DeserializeOption.AllowOmit.
-    deserializeOption: DeserializeOption
-    /// Sets JSON fields naming strategy. Default is `id` function.
-    jsonFieldNaming: JsonFieldNaming
-    /// Allows untyped data, like obj. Default is false.
-    allowUntyped: bool
-    /// Controls serialization of enums. Default is EnumMode.Name
-    enumValue: EnumMode
-}
-with
+type JsonConfig =
+    {
+      /// Generates unformatted JSON if set to true. Default is false.
+      unformatted: bool
+      /// Controls serialization of option None value. Default is SerializeNone.Null.
+      serializeNone: SerializeNone
+      /// Controls deserialization of option types. Default is DeserializeOption.AllowOmit.
+      deserializeOption: DeserializeOption
+      /// Sets JSON fields naming strategy. Default is `id` function.
+      jsonFieldNaming: JsonFieldNaming
+      /// Allows untyped data, like obj. Default is false.
+      allowUntyped: bool
+      /// Controls serialization of enums. Default is EnumMode.Name
+      enumValue: EnumMode }
     /// Creates customized [JsonConfig], each parameter corresponds to [JsonConfig] record member.
-    static member create (?unformatted, ?serializeNone, ?deserializeOption, ?jsonFieldNaming, ?allowUntyped, ?enumValue) =
-        {
-            JsonConfig.unformatted = defaultArg unformatted false
-            JsonConfig.serializeNone = defaultArg serializeNone SerializeNone.Null
-            JsonConfig.deserializeOption = defaultArg deserializeOption DeserializeOption.AllowOmit
-            JsonConfig.jsonFieldNaming = defaultArg jsonFieldNaming id
-            JsonConfig.allowUntyped = defaultArg allowUntyped false
-            JsonConfig.enumValue = defaultArg enumValue EnumMode.Name
-        }
+    static member create
+        (
+            ?unformatted,
+            ?serializeNone,
+            ?deserializeOption,
+            ?jsonFieldNaming,
+            ?allowUntyped,
+            ?enumValue
+        ) =
+        { JsonConfig.unformatted = defaultArg unformatted false
+          JsonConfig.serializeNone = defaultArg serializeNone SerializeNone.Null
+          JsonConfig.deserializeOption = defaultArg deserializeOption DeserializeOption.AllowOmit
+          JsonConfig.jsonFieldNaming = defaultArg jsonFieldNaming id
+          JsonConfig.allowUntyped = defaultArg allowUntyped false
+          JsonConfig.enumValue = defaultArg enumValue EnumMode.Name }
     /// Default [JsonConfig].
-    static member Default = JsonConfig.create()
-    
+    static member Default = JsonConfig.create ()

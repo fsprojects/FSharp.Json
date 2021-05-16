@@ -6,7 +6,9 @@ module internal JsonValueHelpers =
     open Conversions
 
     let raiseWrongType path typeName jvalue =
-        raise(JsonDeserializationError(path, sprintf "Expected type %s is incompatible with jvalue: %A" typeName jvalue))
+        raise (
+            JsonDeserializationError(path, sprintf "Expected type %s is incompatible with jvalue: %A" typeName jvalue)
+        )
 
     let getInt16 (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
@@ -19,7 +21,7 @@ module internal JsonValueHelpers =
         | JsonValue.Number value -> uint16 value
         | JsonValue.Float value -> uint16 value
         | _ -> raiseWrongType path "uint16" jvalue
-        
+
     let getInt (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Number value -> int value
@@ -31,7 +33,7 @@ module internal JsonValueHelpers =
         | JsonValue.Number value -> uint32 value
         | JsonValue.Float value -> uint32 value
         | _ -> raiseWrongType path "uint32" jvalue
-    
+
     let getInt64 (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Number value -> int64 value
@@ -55,7 +57,7 @@ module internal JsonValueHelpers =
         | JsonValue.Float value -> single value
         | JsonValue.Number value -> single value
         | _ -> raiseWrongType path "single" jvalue
-    
+
     let getFloat (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Float value -> value
@@ -79,7 +81,7 @@ module internal JsonValueHelpers =
         | JsonValue.Number value -> sbyte value
         | JsonValue.Float value -> sbyte value
         | _ -> raiseWrongType path "sbyte" jvalue
-    
+
     let getBool (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.Boolean value -> value
@@ -95,13 +97,21 @@ module internal JsonValueHelpers =
         | JsonValue.String value ->
             match value.Length with
             | 1 -> value.Chars(0)
-            | _ -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" value))
+            | _ ->
+                raise (
+                    JsonDeserializationError(
+                        path,
+                        sprintf "Expected string with single character, got jvalue: %s" value
+                    )
+                )
         | _ -> raiseWrongType path "char" jvalue
 
     let getDateTime cultureInfo (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.String value -> 
-            let jvalue = TextConversions.AsDateTime cultureInfo value
+        | JsonValue.String value ->
+            let jvalue =
+                TextConversions.AsDateTime cultureInfo value
+
             match jvalue with
             | Some jvalue -> jvalue
             | None -> raiseWrongType path "DateTime" jvalue
@@ -109,8 +119,9 @@ module internal JsonValueHelpers =
 
     let getDateTimeOffset cultureInfo (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.String value -> 
+        | JsonValue.String value ->
             let jvalue = AsDateTimeOffset cultureInfo value
+
             match jvalue with
             | Some jvalue -> jvalue
             | None -> raiseWrongType path "DateTimeOffset" jvalue
@@ -118,8 +129,9 @@ module internal JsonValueHelpers =
 
     let getGuid (path: JsonPath) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.String value -> 
+        | JsonValue.String value ->
             let jvalue = TextConversions.AsGuid value
+
             match jvalue with
             | Some jvalue -> jvalue
             | None -> raiseWrongType path "Guid" jvalue

@@ -3,20 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Description>F# JSON Reflection based serialization library</Description>
-    <Authors>vsapronov</Authors>
-    <PackageProjectUrl>https://github.com/vsapronov/FSharp.Json</PackageProjectUrl>
+    <Authors>vsapronov;NicoVIII</Authors>
+    <PackageProjectUrl>https://github.com/NicoVIII/FSharp.Json</PackageProjectUrl>
     <Copyright>Copyright 2019</Copyright>
     <PackageTags>F# JSON serialization</PackageTags>
-    <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
+    <RepositoryUrl>https://github.com/NicoVIII/FSharp.Json</RepositoryUrl>
     <Version>0.4.0</Version>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
-    <DocumentationFile>bin\Release\net452\FSharp.Json.XML</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net452|AnyCPU'">
-    <DocumentationFile>bin\Debug\net452\FSharp.Json.XML</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +22,5 @@
     <Compile Include="Transforms.fs" />
     <Compile Include="Interface.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
 </Project>

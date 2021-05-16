@@ -1,7 +1,6 @@
 .idea/
 .vs/
-.vscode/
-bin
-obj
+bin/
+obj/
 *.DotSettings.user
 .ionide/

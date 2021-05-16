@@ -6,19 +6,19 @@ module LowerCamelCase =
 
     [<Test>]
     let ``Single word`` () =
-        Assert.AreEqual("property", Json.lowerCamelCase("Property"))
+        Assert.AreEqual("property", Json.lowerCamelCase ("Property"))
 
     [<Test>]
     let ``No changes needed`` () =
-        Assert.AreEqual("property", Json.lowerCamelCase("property"))
+        Assert.AreEqual("property", Json.lowerCamelCase ("property"))
 
     [<Test>]
     let ``Two words`` () =
-        Assert.AreEqual("twoWords", Json.lowerCamelCase("TwoWords"))
+        Assert.AreEqual("twoWords", Json.lowerCamelCase ("TwoWords"))
 
     [<Test>]
     let ``Abbreviations`` () =
-        Assert.AreEqual("somethingTbd", Json.lowerCamelCase("SomethingTBD"))
+        Assert.AreEqual("somethingTbd", Json.lowerCamelCase ("SomethingTBD"))
 
 module SnakeCase =
     open System
@@ -26,16 +26,16 @@ module SnakeCase =
 
     [<Test>]
     let ``Single word`` () =
-        Assert.AreEqual("property", Json.snakeCase("Property"))
+        Assert.AreEqual("property", Json.snakeCase ("Property"))
 
     [<Test>]
     let ``No changes needed`` () =
-        Assert.AreEqual("property", Json.snakeCase("property"))
+        Assert.AreEqual("property", Json.snakeCase ("property"))
 
     [<Test>]
     let ``Two words`` () =
-        Assert.AreEqual("two_words", Json.snakeCase("TwoWords"))
+        Assert.AreEqual("two_words", Json.snakeCase ("TwoWords"))
 
     [<Test>]
     let ``Abbreviations`` () =
-        Assert.AreEqual("something_tbd", Json.snakeCase("SomethingTBD"))
+        Assert.AreEqual("something_tbd", Json.snakeCase ("SomethingTBD"))
