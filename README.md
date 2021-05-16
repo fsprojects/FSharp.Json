@@ -1,4 +1,6 @@
 # FSharp.Json: JSON Serialization Library
+[![GitHub Release](https://img.shields.io/github/v/release/NicoVIII/FSharp.Json?include_prereleases&sort=semver)](https://github.com/NicoVIII/FSharp.Json/releases/latest)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/NicoVIII/FSharp.Json/main/LICENSE)
 [![Build](https://github.com/NicoVIII/FSharp.Json/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/NicoVIII/FSharp.Json/actions/workflows/build.yml)
 
 FSharp.Json is F# JSON serialization library based on Reflection it's written in F# for F#.
