@@ -40,6 +40,7 @@ module internal Reflection =
     let getSetItemType_ (t: Type) = t.GetGenericArguments().[0]
 
     let getSetConstructor_ (setType: Type, enumType: Type) = setType.GetConstructor([| enumType |])
+    let getSetAdd_ (t: Type) = t.GetMethod("Add")
 
     let isResizeArray_ (t: Type) =
         t.IsGenericType
@@ -101,6 +102,7 @@ module internal Reflection =
     let getSetType : Type -> Type = getSetType_ |> cacheResult
     let getSetItemType : Type -> Type = getSetItemType_ |> cacheResult
     let getSetConstructor : Type * Type -> ConstructorInfo = getSetConstructor_ |> cacheResult
+    let getSetAdd : Type -> MethodInfo = getSetAdd_ |> cacheResult
 
     let isResizeArray : Type -> bool = isResizeArray_ |> cacheResult
     let getResizeArrayType : Type -> Type = getResizeArrayType_ |> cacheResult
