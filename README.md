@@ -1,4 +1,5 @@
 # FSharp.Json: JSON Serialization Library
+[![Build](https://github.com/NicoVIII/FSharp.Json/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/NicoVIII/FSharp.Json/actions/workflows/build.yml)
 
 FSharp.Json is F# JSON serialization library based on Reflection it's written in F# for F#.
 
