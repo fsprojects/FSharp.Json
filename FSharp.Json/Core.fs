@@ -208,7 +208,10 @@ module internal Core =
                 |> Seq.map (fun kvp ->
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
-                    let jvalue = serializeUnwrapOption (value.GetType()) JsonField.Default value
+                    let jvalue =
+                        match value with
+                        | null -> None
+                        | value -> serializeUnwrapOption (value.GetType()) JsonField.Default value
                     (key, Option.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
@@ -325,6 +328,8 @@ module internal Core =
                 let t = getUntypedType path t jvalue
                 let jvalue =
                     match t with
+                    | t when isNull t ->
+                        null :> obj
                     | t when t = typeof<int16> ->
                         JsonValueHelpers.getInt16 path jvalue :> obj
                     | t when t = typeof<uint16> ->
