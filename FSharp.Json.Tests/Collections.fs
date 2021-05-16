@@ -26,6 +26,13 @@ module Collections =
         Assert.AreEqual(expected, actual)
 
     [<Test>]
+    let ``ResizeArray serialization to JSON array`` () =
+        let expected = """["some","text"]"""
+        let value = [ "some"; "text" ] |> ResizeArray
+        let actual = Json.serializeU value
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
     let ``Array serialization/deserialization`` () =
         let expected = [| "some"; "text" |]
         let json = Json.serialize (expected)
@@ -47,6 +54,16 @@ module Collections =
         Assert.AreEqual(expected, actual)
 
     [<Test>]
+    let ``ResizeArray serialization/deserialization`` () =
+        let expected = [ "some"; "text" ] |> ResizeArray
+        let json = Json.serialize (expected)
+
+        let actual =
+            Json.deserialize<ResizeArray<string>> json
+
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
     let ``Array empty serialization/deserialization`` () =
         let expected = [||]
         let json = Json.serialize (expected)
@@ -65,4 +82,14 @@ module Collections =
         let expected = Set.empty
         let json = Json.serialize (expected)
         let actual = Json.deserialize<Set<string>> json
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``ResizeArray empty serialization/deserialization`` () =
+        let expected = ResizeArray<string>()
+        let json = Json.serialize (expected)
+
+        let actual =
+            Json.deserialize<ResizeArray<string>> json
+
         Assert.AreEqual(expected, actual)
