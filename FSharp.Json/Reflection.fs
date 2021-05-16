@@ -27,6 +27,20 @@ module internal Reflection =
 
     let getListEmptyProperty_ (t: Type) = t.GetProperty("Empty")
 
+    let getIEnumerableType_ (itemType: Type) =
+        typedefof<seq<_>>.MakeGenericType ([| itemType |])
+
+    let isSet_ (t: Type) =
+        t.IsGenericType
+        && t.GetGenericTypeDefinition() = typedefof<Set<_>>
+
+    let getSetType_ (itemType: Type) =
+        typedefof<Set<_>>.MakeGenericType ([| itemType |])
+
+    let getSetItemType_ (t: Type) = t.GetGenericArguments().[0]
+
+    let getSetConstructor_ (setType: Type, enumType: Type) = setType.GetConstructor([| enumType |])
+
     let isMap_ (t: Type) =
         t.IsGenericType
         && t.GetGenericTypeDefinition() = typedefof<Map<_, _>>
@@ -68,6 +82,13 @@ module internal Reflection =
     let getListConstructor : Type -> MethodInfo = getListConstructor_ |> cacheResult
     let getListEmptyProperty : Type -> PropertyInfo = getListEmptyProperty_ |> cacheResult
 
+    let getIEnumerableType : Type -> Type = getIEnumerableType_ |> cacheResult
+
+    let isSet : Type -> bool = isSet_ |> cacheResult
+    let getSetType : Type -> Type = getSetType_ |> cacheResult
+    let getSetItemType : Type -> Type = getSetItemType_ |> cacheResult
+    let getSetConstructor : Type * Type -> ConstructorInfo = getSetConstructor_ |> cacheResult
+
     let isMap : Type -> bool = isMap_ |> cacheResult
     let getMapKeyType : Type -> Type = getMapKeyType_ |> cacheResult
     let getMapValueType : Type -> Type = getMapValueType_ |> cacheResult
@@ -99,6 +120,22 @@ module internal Reflection =
             (getListEmptyProperty listType).GetValue(null)
 
         List.foldBack addItem items theList
+
+    let createSet (itemType: Type) (items: obj list) =
+        let setType = getSetType itemType
+        let enumType = getIEnumerableType itemType
+        let setConstructor = getSetConstructor (setType, enumType)
+
+        let listEmpty =
+            getListType itemType |> getListEmptyProperty
+
+        let setAdd item set =
+            setType.GetMethod("Add").Invoke(set, [| item |])
+
+        let newSet =
+            setConstructor.Invoke([| listEmpty.GetValue(null) |])
+
+        List.foldBack setAdd items newSet
 
     let KvpKey (value: obj) : obj =
         let keyProperty = value.GetType().GetProperty("Key")

@@ -164,7 +164,8 @@ module internal Core =
                     || isArray t
                     || isMap t
                     || isRecord t
-                    || isUnion t -> serialize config t value
+                    || isUnion t
+                    || isSet t -> serialize config t value
                 | _ ->
                     failSerialization
                     <| sprintf "Unknown type: %s" t.Name
@@ -303,6 +304,7 @@ module internal Core =
         | t when isList t -> serializeEnumerable (value :?> IEnumerable)
         | t when isTuple t -> serializeTupleItems (getTupleElements t) (FSharpValue.GetTupleFields value)
         | t when isUnion t -> serializeUnion t value
+        | t when isSet t -> serializeEnumerable (value :?> IEnumerable)
         | t ->
             let msg =
                 sprintf
@@ -411,7 +413,8 @@ module internal Core =
                         || isArray t
                         || isMap t
                         || isRecord t
-                        || isUnion t -> deserialize config path t jvalue
+                        || isUnion t
+                        || isSet t -> deserialize config path t jvalue
                     | _ ->
                         failDeserialization path
                         <| sprintf "Not supported type: %s" t.Name
@@ -484,6 +487,17 @@ module internal Core =
 
                 arrayValues |> List.ofSeq |> createList itemType
             | _ -> failDeserialization path "Failed to parse list from JSON that is not array."
+
+        let deserializeSet (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
+            match jvalue with
+            | JsonValue.Array jvalues ->
+                let itemType = getSetItemType t
+
+                let arrayValues =
+                    deserializeArrayItems path itemType jvalues
+
+                arrayValues |> List.ofSeq |> createSet itemType
+            | _ -> failDeserialization path "Failed to parse set from JSON that is not array."
 
         let deserializeArray (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
             match jvalue with
@@ -699,8 +713,9 @@ module internal Core =
         | t when isList t -> deserializeList path t jvalue
         | t when isTuple t -> deserializeTuple path t jvalue
         | t when isUnion t -> deserializeUnion path t jvalue
+        | t when isSet t -> deserializeSet path t jvalue
         | _ ->
             failDeserialization path
             <| sprintf
-                "Failed to serialize, must be one of following types: record, map, array, list, tuple, union. Type is: %s."
+                "Failed to serialize, must be one of following types: record, map, array, list, set, tuple, union. Type is: %s."
                 t.Name
