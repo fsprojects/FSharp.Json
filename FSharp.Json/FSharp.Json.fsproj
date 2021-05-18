@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>NicoVIII.FSharp.Json</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TextConversions.fs" />

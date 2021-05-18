@@ -40,7 +40,6 @@ module Pack =
     let options (options: DotNet.PackOptions) =
         let properties =
             [ ("Version", Changelog.nugetVersion)
-              ("PackageId", $"{gitOwner}.{projectName}")
               ("Authors", authors)
               ("PackageProjectUrl", gitUrl)
               ("PackageTags", tags)
