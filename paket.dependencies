@@ -1,6 +1,8 @@
 source https://www.nuget.org/api/v2
 
-nuget FSharp.Core ~> 5.0.0
+framework: auto-detect
+
+nuget FSharp.Core 4.3.4
 nuget Microsoft.NET.Test.Sdk 15.6.2
 nuget Nunit 3.13.2
 nuget NUnit3TestAdapter 3.17.0

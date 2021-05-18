@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Modernize tests
-- Target to net5.0
+- Dependency FSharp.Core 4.3.4 (F# 4.1 - https://github.com/dotnet/fsharp/blob/main/docs/fsharp-core-notes.md - https://en.wikipedia.org/wiki/F_Sharp_(programming_language))
 
 ### Fixed
 - Null in untyped deserializing
