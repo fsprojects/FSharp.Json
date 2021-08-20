@@ -247,6 +247,11 @@ module internal Core =
                         let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
                         let jvalue = (jsonUnion.CaseValueField, jvalue)
                         JsonValue.Record [| jkey; jvalue |]
+                    | UnionMode.CaseKeyDiscriminatorField ->
+                        match jvalue with
+                        | JsonValue.Record jrecord ->
+                            JsonValue.Record (Array.append [| (jsonUnion.CaseKeyField, JsonValue.String theCase) |] jrecord)
+                        | _ -> failSerialization <| sprintf "Failed to serialize union, union mode %A supports only objects as discriminated field could exist only in object" jsonUnion.Mode
                     | mode -> failSerialization <| sprintf "Failed to serialize union, unsupported union mode: %A" mode
 
         match t with
@@ -463,75 +468,72 @@ module internal Core =
                 FSharpValue.MakeRecord(t, propsValues)
             | _ -> failDeserialization path "Failed to parse record from JSON that is not object."
 
-        let deserializeUnion (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
-            let jsonUnion = getJsonUnion t
+        let getUnionCaseInfo (path: JsonPath) (t: Type) (jCaseName: string): UnionCaseInfo =
+            let jsonUnion = t |> getJsonUnion
             let unionCases = t |> getUnionCases
-            match unionCases.Length with
-            | 1 ->
-                let caseInfo = unionCases.[0]
+            let caseInfo = unionCases |> Array.tryFind (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = jCaseName)
+            match caseInfo with
+            | Some caseInfo -> caseInfo
+            | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case: %s." jCaseName
+        
+        let mustFindField (path: JsonPath) (fieldName: string) (fields: (string * JsonValue)[]): string * JsonValue =
+            let caseKeyField = fields |> Seq.tryFind (fun f -> fst f = fieldName)
+            match caseKeyField with
+            | Some field -> field
+            | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find field: %s." fieldName
+
+        let makeUnion (path: JsonPath) (t: Type) (jCaseName: string) (jCaseValue: JsonValue): obj =
+            let caseInfo = jCaseName |> getUnionCaseInfo path t
+            let casePath = JsonPathItem.Field jCaseName |> path.createNew
+            let props: PropertyInfo array = caseInfo.GetFields()
+            let fieldAttr = getJsonFieldUnionCase caseInfo
+            let values =
+                match props with
+                | [| prop |] ->
+                    [| deserializeUnwrapOption casePath prop.PropertyType fieldAttr (Some jCaseValue) |]
+                | _ ->
+                    let propsTypes = props |> Array.map (fun p -> p.PropertyType)
+                    deserializeTupleElements casePath propsTypes jCaseValue
+            FSharpValue.MakeUnion (caseInfo, values)
+        
+        let deserializeUnion (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
+            let jsonUnion = t |> getJsonUnion
+            let unionCases = t |> getUnionCases
+            match unionCases with
+            | [| caseInfo |] ->
                 let fieldAttr = getJsonFieldUnionCase caseInfo
                 let props: PropertyInfo array = caseInfo.GetFields()
                 let values =
-                    match props.Length with
-                    | 1 ->
-                        let propType = props.[0].PropertyType
-                        let propValue = deserializeUnwrapOption path propType fieldAttr (Some jvalue)
-                        [| propValue |]
+                    match props with
+                    | [| prop |] ->
+                        [| deserializeUnwrapOption path prop.PropertyType fieldAttr (Some jvalue) |]
                     | _ ->
                         let propsTypes = props |> Array.map (fun p -> p.PropertyType)
                         deserializeTupleElements path propsTypes jvalue
                 FSharpValue.MakeUnion (caseInfo, values)
             | _ ->
                 match jvalue with
-                | JsonValue.String fieldName ->
-                    let caseInfo = unionCases |> Array.tryFind (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
-                    let caseInfo =
-                        match caseInfo with
-                        | Some caseInfo -> caseInfo
-                        | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case: %s." fieldName
-                    FSharpValue.MakeUnion (caseInfo, null)
+                | JsonValue.String caseName ->
+                    FSharpValue.MakeUnion (caseName |> getUnionCaseInfo path t, null)
                 | JsonValue.Record fields ->
-                    let fieldName, fieldValue =
-                        match jsonUnion.Mode with
-                        | UnionMode.CaseKeyAsFieldName ->
-                            if fields.Length <> 1 then
-                                failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be 1 field." fields.Length
-                            fields.[0]
-                        | UnionMode.CaseKeyAsFieldValue ->
-                            if fields.Length < 2 then
-                                failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be at least 2 fields." fields.Length
-                            let caseKeyField = fields |> Seq.tryFind (fun f -> fst f = jsonUnion.CaseKeyField)
-                            let caseKeyField =
-                                match caseKeyField with
-                                | Some fieldName -> fieldName
-                                | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case field: %s." jsonUnion.CaseKeyField
-                            let caseValueField = fields |> Seq.tryFind (fun f -> fst f = jsonUnion.CaseValueField)
-                            let caseValueField =
-                                match caseValueField with
-                                | Some fieldValue -> fieldValue
-                                | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case field value: %s." jsonUnion.CaseValueField
-                            let caseNamePath = caseKeyField |> fst |> JsonPathItem.Field |> path.createNew
-                            let caseName = JsonValueHelpers.getString caseNamePath (snd caseKeyField)
-                            (caseName, snd caseValueField)
-                        | mode -> failDeserialization path <| sprintf "Failed to parse union, unsupported union mode: %A" mode
-                    let casePath = JsonPathItem.Field fieldName |> path.createNew
-                    let caseInfo = unionCases |> Array.tryFind (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
-                    let caseInfo =
-                        match caseInfo with
-                        | Some caseInfo -> caseInfo
-                        | None -> failDeserialization path <| sprintf "Failed to parse union, unable to find union case: %s." fieldName
-                    let fieldAttr = getJsonFieldUnionCase caseInfo
-                    let props: PropertyInfo array = caseInfo.GetFields()
-                    let values =
-                        match props.Length with
-                        | 1 ->
-                            let propType = props.[0].PropertyType
-                            let propValue = deserializeUnwrapOption casePath propType fieldAttr (Some fieldValue)
-                            [| propValue |]
+                    match jsonUnion.Mode with
+                    | UnionMode.CaseKeyDiscriminatorField ->
+                        let caseKeyFieldName, caseKeyFieldValue = mustFindField path jsonUnion.CaseKeyField fields
+                        let caseNamePath = caseKeyFieldName |> JsonPathItem.Field |> path.createNew
+                        let jCaseName = caseKeyFieldValue |> JsonValueHelpers.getString caseNamePath
+                        makeUnion path t jCaseName jvalue
+                    | UnionMode.CaseKeyAsFieldValue ->
+                        let caseKeyFieldName, caseKeyFieldValue = mustFindField path jsonUnion.CaseKeyField fields
+                        let _, jCaseValue = mustFindField path jsonUnion.CaseValueField fields
+                        let caseNamePath = caseKeyFieldName |> JsonPathItem.Field |> path.createNew                        
+                        let jCaseName = caseKeyFieldValue |> JsonValueHelpers.getString caseNamePath
+                        makeUnion path t jCaseName jCaseValue
+                    | UnionMode.CaseKeyAsFieldName ->
+                        match fields with
+                        | [| (jCaseName, jCaseValue) |] ->
+                            makeUnion path t jCaseName jCaseValue
                         | _ ->
-                            let propsTypes = props |> Array.map (fun p -> p.PropertyType)
-                            deserializeTupleElements casePath propsTypes fieldValue
-                    FSharpValue.MakeUnion (caseInfo, values)
+                            failDeserialization path <| sprintf "Failed to parse union from record with %i fields, should be 1 field." fields.Length
                 | _ -> failDeserialization path "Failed to parse union from JSON that is not object."
 
         match t with
