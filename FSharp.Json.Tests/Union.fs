@@ -126,6 +126,25 @@ module Union =
         let actual = Json.deserializeEx<TheUnion> config json
         Assert.AreEqual(expected, actual)
 
+    [<JsonUnion(Mode = UnionMode.CaseKeyDiscriminatorField, CaseKeyField="discriminator")>]
+    type TheDiscriminatorUnion =
+    | StringCase of string
+    | RecordCase of TheRecord
+
+    [<Test>]
+    let ``Union discriminator record case serialization`` () =
+        let value = TheDiscriminatorUnion.RecordCase {TheRecord.Value = "The string"}
+        let actual = Json.serializeU value
+        let expected = """{"discriminator":"RecordCase","Value":"The string"}"""
+        Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``Union discriminator record case deserialization`` () =
+        let expected = TheDiscriminatorUnion.RecordCase {TheRecord.Value = "The string"}
+        let json = Json.serialize(expected)
+        let actual = Json.deserialize<TheDiscriminatorUnion> json
+        Assert.AreEqual(expected, actual)
+            
     type SingleCaseUnion = SingleCase of string
 
     type SingleCaseRecord = {
