@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-and-test:  
     docker:
-      - image: microsoft/dotnet:2.1
+      - image: microsoft/dotnet:latest
     steps:
       - checkout
       - run:
