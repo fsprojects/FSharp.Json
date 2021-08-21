@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  build-and-test:  
+    docker:
+      - image: microsoft/dotnet:2.1
+    steps:
+      - checkout
+      - run:
+          working_directory: ~/project
+          name: Run tests
+          command: |
+            dotnet test FSharp.Json.Tests
+            
+
+workflows:
+  build-test: 
+    jobs:
+      - build-and-test
