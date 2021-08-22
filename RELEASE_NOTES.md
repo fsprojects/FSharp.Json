@@ -1,5 +1,8 @@
 # Release Notes
 
+## 0.4.1
+* Refactored union support.
+
 ## 0.4.0
 * Fixed no fields union case (de)serialization - not backward compatible.
 
