@@ -10,15 +10,7 @@
     <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
     <Version>0.4.0</Version>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
-    <DocumentationFile>bin\Release\net452\FSharp.Json.XML</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net452|AnyCPU'">
-    <DocumentationFile>bin\Debug\net452\FSharp.Json.XML</DocumentationFile>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <Compile Include="TextConversions.fs" />
     <Compile Include="JsonValue.fs" />
