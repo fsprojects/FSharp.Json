@@ -1,19 +1,35 @@
 version: 2.1
 
 jobs:
-  build-and-test:  
+  build-test:  
     docker:
       - image: microsoft/dotnet:latest
     steps:
       - checkout
       - run:
           working_directory: ~/project
-          name: Run tests
+          name: Build and run tests
           command: |
             dotnet test FSharp.Json.Tests
-            
+  release:  
+    docker:
+      - image: microsoft/dotnet:latest
+    steps:
+      - checkout
+      - run:
+          working_directory: ~/project
+          name: Pack and publish to NuGet
+          command: |
+            dotnet pack FSharp.Json --configuration Release
+            dotnet nuget push ./FSharp.Json/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json
 
 workflows:
   build-test: 
     jobs:
-      - build-and-test
+      - build-test
+      - release:
+          requires:
+            - build-test
+          filters:
+            tags:
+              only: /^v.*/
