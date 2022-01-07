@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0]
+### Changed
+- [from upstream] Fixed no fields union case (de)serialization - not backward compatible.
+- [from upstream] Refactored union support.
+
 ## [0.5.0]
 ### Added
 - Support for Set and ResizeArray
