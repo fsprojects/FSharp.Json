@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-test:  
     docker:
-      - image: microsoft/dotnet:latest
+      - image: mcr.microsoft.com/dotnet/sdk:2.1
     steps:
       - checkout
       - run:
@@ -13,7 +13,7 @@ jobs:
             dotnet test FSharp.Json.Tests
   release:  
     docker:
-      - image: microsoft/dotnet:latest
+      - image: mcr.microsoft.com/dotnet/sdk:2.1
     steps:
       - checkout
       - run:
