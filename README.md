@@ -109,7 +109,7 @@ The core of FSharp.Json library is located in single [Core.fs file][core].
   [reflection]: https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/reflection
   [fsharp_data]: http://fsharp.github.io/FSharp.Data/
   [jsonvalue_type]: http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html
-  [core]: https://github.com/vsapronov/FSharp.Json/blob/master/src/FSharp.Json/Core.fs
+  [core]: FSharp.Json/Core.fs
 
 ## Documentation
 
@@ -594,11 +594,11 @@ let deserialized = Json.deserialize<TheUnion> json
 
 ## Type Transform
 
-[Supported types](supported-types) section maps F# types into JSON types.
+[Supported types](#supported-types) section maps F# types into JSON types.
 What if some data needed to be represented as a different type then the default JSON type?
 If changing type of the member in F# is not an option then type transform can help.
 
-Any data member is translated F# Type -> JSON type by [default](supported-types) types mapping.
+Any data member is translated F# Type -> JSON type by [default](#supported-types) types mapping.
 [Type Transform](FSharp.Json/InterfaceTypes.fs) is applied in the middle of this translation: F# Type -> Alternative F# Type -> JSON type.
 Alternative F# Type -> JSON type is still done by default types mapping, type transform is responsible for F# Type -> Alternative F# Type.
 
@@ -724,7 +724,7 @@ Could be found [here](CHANGELOG.md).
 
 ## Contributing and copyright
 
-The project is hosted on [GitHub][gh] where you can [report issues][issues], fork 
+The upstream project is hosted on [GitHub][gh] where you can [report issues][issues], fork 
 the project and submit pull requests. If you're adding a new public API, please also 
 consider adding documentation to this [README][readme].
 
@@ -732,12 +732,12 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [readme]: tree/master/README.md
+  [readme]: README.md
   [gh]: https://github.com/vsapronov/FSharp.Json
   [issues]: https://github.com/vsapronov/FSharp.Json/issues
-  [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
+  [license]: LICENSE.txt
 
 ## Maintainer(s)
 
-- [@vsapronov](https://github.com/vsapronov)
+- [@vsapronov](https://github.com/vsapronov) (upstream)
 - [@NicoVIII](https://github.com/NicoVIII)
