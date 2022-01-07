@@ -127,12 +127,11 @@ type internal TextConversions private () =
         | _ ->
             Double.TryParse(text, NumberStyles.Any, cultureInfo)
             |> asOption
-            |> Option.bind
-                (fun f ->
-                    if useNoneForMissingValues && Double.IsNaN f then
-                        None
-                    else
-                        Some f)
+            |> Option.bind (fun f ->
+                if useNoneForMissingValues && Double.IsNaN f then
+                    None
+                else
+                    Some f)
 
     static member AsBoolean(text: string) =
         match text.Trim() with

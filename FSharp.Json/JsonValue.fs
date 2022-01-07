@@ -214,6 +214,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         | 'f' -> parseLiteral ("false", JsonValue.Boolean false)
         | 'n' -> parseLiteral ("null", JsonValue.Null)
         | _ -> throw ()
+
     and parseRootValue () =
         skipWhitespace ()
         ensure (i < s.Length)
@@ -222,6 +223,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         | '{' -> parseObject ()
         | '[' -> parseArray ()
         | _ -> throw ()
+
     and parseString () =
         ensure (i < s.Length && s.[i] = '"')
         i <- i + 1
@@ -296,6 +298,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         let str = buf.ToString()
         buf.Clear() |> ignore
         str
+
     and parseNum () =
         let start = i
 
@@ -311,6 +314,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
             match TextConversions.AsFloat [||] (*useNoneForMissingValues*) false cultureInfo sub with
             | Some x -> JsonValue.Float x
             | _ -> throw ()
+
     and parsePair () =
         let key = parseString ()
         skipWhitespace ()
@@ -318,6 +322,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         i <- i + 1
         skipWhitespace ()
         key, parseValue ()
+
     and parseEllipsis () =
         let mutable openingBrace = false
 
@@ -333,6 +338,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         if openingBrace && i < s.Length && s.[i] = '}' then
             i <- i + 1
             skipWhitespace ()
+
     and parseObject () =
         ensure (i < s.Length && s.[i] = '{')
         i <- i + 1
@@ -360,6 +366,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         ensure (i < s.Length && s.[i] = '}')
         i <- i + 1
         JsonValue.Record(pairs.ToArray())
+
     and parseArray () =
         ensure (i < s.Length && s.[i] = '[')
         i <- i + 1
@@ -383,6 +390,7 @@ type private JsonParser(jsonText: string, cultureInfo, tolerateErrors) =
         ensure (i < s.Length && s.[i] = ']')
         i <- i + 1
         JsonValue.Array(vals.ToArray())
+
     and parseLiteral (expected, r) =
         ensure (i + expected.Length < s.Length)
 

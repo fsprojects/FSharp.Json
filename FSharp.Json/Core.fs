@@ -28,27 +28,27 @@ module internal Core =
         let theConstructor = transformType.GetConstructors().[0]
         theConstructor.Invoke([||]) :?> ITypeTransform
 
-    let getJsonFieldProperty : PropertyInfo -> JsonField =
+    let getJsonFieldProperty: PropertyInfo -> JsonField =
         findAttributeMember<JsonField>
         >> Option.defaultValue JsonField.Default
         |> cacheResult
 
-    let getJsonUnion : Type -> JsonUnion =
+    let getJsonUnion: Type -> JsonUnion =
         findAttributeMember<JsonUnion>
         >> Option.defaultValue JsonUnion.Default
         |> cacheResult
 
-    let getJsonFieldUnionCase : UnionCaseInfo -> JsonField =
+    let getJsonFieldUnionCase: UnionCaseInfo -> JsonField =
         findAttributeCase<JsonField>
         >> Option.defaultValue JsonField.Default
         |> cacheResult
 
-    let getJsonUnionCase : UnionCaseInfo -> JsonUnionCase =
+    let getJsonUnionCase: UnionCaseInfo -> JsonUnionCase =
         findAttributeCase<JsonUnionCase>
         >> Option.defaultValue JsonUnionCase.Default
         |> cacheResult
 
-    let getTransform : Type -> ITypeTransform = createTransform |> cacheResult
+    let getTransform: Type -> ITypeTransform = createTransform |> cacheResult
 
     let getJsonFieldName (config: JsonConfig) (attribute: JsonField) (prop: PropertyInfo) =
         match attribute.Name with
@@ -166,7 +166,9 @@ module internal Core =
                     || isRecord t
                     || isUnion t
                     || isSet t
-                    || isResizeArray t -> serialize config t value
+                    || isResizeArray t
+                    ->
+                    serialize config t value
                 | _ ->
                     failSerialization
                     <| sprintf "Unknown type: %s" t.Name
@@ -175,7 +177,8 @@ module internal Core =
 
                 try
                     JsonValue.Parse value
-                with ex -> JsonValue.String value
+                with
+                | ex -> JsonValue.String value
 
         let serializeUnwrapOption (t: Type) (jsonField: JsonField) (value: obj) : JsonValue option =
             match t with
@@ -232,22 +235,21 @@ module internal Core =
         let serializeKvpEnumerable (kvps: IEnumerable) : JsonValue =
             let props =
                 kvps.Cast<Object>()
-                |> Seq.map
-                    (fun kvp ->
-                        let key = KvpKey kvp :?> string
-                        let value = KvpValue kvp
+                |> Seq.map (fun kvp ->
+                    let key = KvpKey kvp :?> string
+                    let value = KvpValue kvp
 
-                        let jvalue =
-                            match value with
-                            | null -> None
-                            | value -> serializeUnwrapOption (value.GetType()) JsonField.Default value
+                    let jvalue =
+                        match value with
+                        | null -> None
+                        | value -> serializeUnwrapOption (value.GetType()) JsonField.Default value
 
-                        (key, Option.defaultValue JsonValue.Null jvalue))
+                    (key, Option.defaultValue JsonValue.Null jvalue))
 
             props |> Array.ofSeq |> JsonValue.Record
 
         let serializeRecord (t: Type) (therec: obj) : JsonValue =
-            let props : PropertyInfo array = getRecordFields (t)
+            let props: PropertyInfo array = getRecordFields (t)
 
             let fields =
                 props
@@ -417,7 +419,9 @@ module internal Core =
                         || isRecord t
                         || isUnion t
                         || isSet t
-                        || isResizeArray t -> deserialize config path t jvalue
+                        || isResizeArray t
+                        ->
+                        deserialize config path t jvalue
                     | _ ->
                         failDeserialization path
                         <| sprintf "Not supported type: %s" t.Name
@@ -455,30 +459,28 @@ module internal Core =
             match jvalue with
             | JsonValue.Record fields ->
                 fields
-                |> Array.map
-                    (fun field ->
-                        let itemName = fst field
-                        let itemJsonValue = snd field
+                |> Array.map (fun field ->
+                    let itemName = fst field
+                    let itemJsonValue = snd field
 
-                        let itemPath =
-                            JsonPathItem.Field itemName |> path.createNew
+                    let itemPath =
+                        JsonPathItem.Field itemName |> path.createNew
 
-                        let itemValue =
-                            deserializeUnwrapOption itemPath itemValueType JsonField.Default (Some itemJsonValue)
+                    let itemValue =
+                        deserializeUnwrapOption itemPath itemValueType JsonField.Default (Some itemJsonValue)
 
-                        (itemName, itemValue))
+                    (itemName, itemValue))
                 |> List.ofArray
                 |> CreateMap t
             | _ -> failDeserialization path "Failed to parse map from JSON that is not object."
 
         let deserializeArrayItems (path: JsonPath) (t: Type) (jvalues: JsonValue array) =
             jvalues
-            |> Array.mapi
-                (fun index jvalue ->
-                    let itemPath =
-                        JsonPathItem.ArrayItem index |> path.createNew
+            |> Array.mapi (fun index jvalue ->
+                let itemPath =
+                    JsonPathItem.ArrayItem index |> path.createNew
 
-                    deserializeUnwrapOption itemPath t JsonField.Default (Some jvalue))
+                deserializeUnwrapOption itemPath t JsonField.Default (Some jvalue))
 
         let deserializeList (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
             match jvalue with
@@ -542,12 +544,11 @@ module internal Core =
 
                 let tupleValues =
                     (Array.zip types values)
-                    |> Array.mapi
-                        (fun index (t, value) ->
-                            let itemPath =
-                                JsonPathItem.ArrayItem index |> path.createNew
+                    |> Array.mapi (fun index (t, value) ->
+                        let itemPath =
+                            JsonPathItem.ArrayItem index |> path.createNew
 
-                            deserializeUnwrapOption itemPath t JsonField.Default (Some value))
+                        deserializeUnwrapOption itemPath t JsonField.Default (Some value))
 
                 tupleValues
             | _ -> failDeserialization path "Failed to parse tuple from JSON that is not array."
@@ -577,7 +578,7 @@ module internal Core =
         let deserializeRecord (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
             match jvalue with
             | JsonValue.Record fields ->
-                let props : PropertyInfo array = getRecordFields t
+                let props: PropertyInfo array = getRecordFields t
 
                 let propsValues =
                     props
@@ -594,7 +595,7 @@ module internal Core =
             | 1 ->
                 let caseInfo = unionCases.[0]
                 let fieldAttr = getJsonFieldUnionCase caseInfo
-                let props : PropertyInfo array = caseInfo.GetFields()
+                let props: PropertyInfo array = caseInfo.GetFields()
 
                 let values =
                     match props.Length with
@@ -617,8 +618,8 @@ module internal Core =
                 | JsonValue.String fieldName ->
                     let caseInfo =
                         unionCases
-                        |> Array.tryFind
-                            (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
+                        |> Array.tryFind (fun c ->
+                            getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
 
                     let caseInfo =
                         match caseInfo with
@@ -691,8 +692,8 @@ module internal Core =
 
                     let caseInfo =
                         unionCases
-                        |> Array.tryFind
-                            (fun c -> getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
+                        |> Array.tryFind (fun c ->
+                            getJsonUnionCaseName config jsonUnion (getJsonUnionCase c) c = fieldName)
 
                     let caseInfo =
                         match caseInfo with
@@ -702,7 +703,7 @@ module internal Core =
                             <| sprintf "Failed to parse union, unable to find union case: %s." fieldName
 
                     let fieldAttr = getJsonFieldUnionCase caseInfo
-                    let props : PropertyInfo array = caseInfo.GetFields()
+                    let props: PropertyInfo array = caseInfo.GetFields()
 
                     let values =
                         match props.Length with
@@ -735,4 +736,5 @@ module internal Core =
             failDeserialization path
             <| sprintf
                 "Failed to serialize, must be one of following types: record, map, array, list, set, tuple, union. Type is: %s."
+                t.Name
                 t.Name

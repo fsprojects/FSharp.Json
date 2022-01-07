@@ -72,50 +72,50 @@ module internal Reflection =
         let cache = new ConcurrentDictionary<'P, 'R>()
         fun parameter -> cache.GetOrAdd(parameter, theFunction)
 
-    let isRecord : Type -> bool = FSharpType.IsRecord |> cacheResult
+    let isRecord: Type -> bool = FSharpType.IsRecord |> cacheResult
 
-    let getRecordFields : Type -> PropertyInfo [] =
+    let getRecordFields: Type -> PropertyInfo [] =
         FSharpType.GetRecordFields |> cacheResult
 
-    let isUnion : Type -> bool = FSharpType.IsUnion |> cacheResult
-    let getUnionCases : Type -> UnionCaseInfo [] = FSharpType.GetUnionCases |> cacheResult
+    let isUnion: Type -> bool = FSharpType.IsUnion |> cacheResult
+    let getUnionCases: Type -> UnionCaseInfo [] = FSharpType.GetUnionCases |> cacheResult
 
-    let isTuple : Type -> bool = FSharpType.IsTuple |> cacheResult
+    let isTuple: Type -> bool = FSharpType.IsTuple |> cacheResult
 
-    let getTupleElements : Type -> Type [] =
+    let getTupleElements: Type -> Type [] =
         FSharpType.GetTupleElements |> cacheResult
 
-    let isOption : Type -> bool = isOption_ |> cacheResult
-    let getOptionType : Type -> Type = getOptionType_ |> cacheResult
+    let isOption: Type -> bool = isOption_ |> cacheResult
+    let getOptionType: Type -> Type = getOptionType_ |> cacheResult
 
-    let isArray : Type -> bool = isArray_ |> cacheResult
+    let isArray: Type -> bool = isArray_ |> cacheResult
 
-    let isList : Type -> bool = isList_ |> cacheResult
-    let getListType : Type -> Type = getListType_ |> cacheResult
-    let getListItemType : Type -> Type = getListItemType_ |> cacheResult
-    let getListConstructor : Type -> MethodInfo = getListConstructor_ |> cacheResult
-    let getListEmptyProperty : Type -> PropertyInfo = getListEmptyProperty_ |> cacheResult
+    let isList: Type -> bool = isList_ |> cacheResult
+    let getListType: Type -> Type = getListType_ |> cacheResult
+    let getListItemType: Type -> Type = getListItemType_ |> cacheResult
+    let getListConstructor: Type -> MethodInfo = getListConstructor_ |> cacheResult
+    let getListEmptyProperty: Type -> PropertyInfo = getListEmptyProperty_ |> cacheResult
 
-    let getIEnumerableType : Type -> Type = getIEnumerableType_ |> cacheResult
+    let getIEnumerableType: Type -> Type = getIEnumerableType_ |> cacheResult
 
-    let isSet : Type -> bool = isSet_ |> cacheResult
-    let getSetType : Type -> Type = getSetType_ |> cacheResult
-    let getSetItemType : Type -> Type = getSetItemType_ |> cacheResult
-    let getSetConstructor : Type * Type -> ConstructorInfo = getSetConstructor_ |> cacheResult
-    let getSetAdd : Type -> MethodInfo = getSetAdd_ |> cacheResult
+    let isSet: Type -> bool = isSet_ |> cacheResult
+    let getSetType: Type -> Type = getSetType_ |> cacheResult
+    let getSetItemType: Type -> Type = getSetItemType_ |> cacheResult
+    let getSetConstructor: Type * Type -> ConstructorInfo = getSetConstructor_ |> cacheResult
+    let getSetAdd: Type -> MethodInfo = getSetAdd_ |> cacheResult
 
-    let isResizeArray : Type -> bool = isResizeArray_ |> cacheResult
-    let getResizeArrayType : Type -> Type = getResizeArrayType_ |> cacheResult
-    let getResizeArrayItemType : Type -> Type = getResizeArrayItemType_ |> cacheResult
-    let getResizeArrayAdd : Type -> MethodInfo = getResizeArrayAdd_ |> cacheResult
+    let isResizeArray: Type -> bool = isResizeArray_ |> cacheResult
+    let getResizeArrayType: Type -> Type = getResizeArrayType_ |> cacheResult
+    let getResizeArrayItemType: Type -> Type = getResizeArrayItemType_ |> cacheResult
+    let getResizeArrayAdd: Type -> MethodInfo = getResizeArrayAdd_ |> cacheResult
 
-    let getResizeArrayConstructor : Type -> ConstructorInfo =
+    let getResizeArrayConstructor: Type -> ConstructorInfo =
         getResizeArrayConstructor_ |> cacheResult
 
-    let isMap : Type -> bool = isMap_ |> cacheResult
-    let getMapKeyType : Type -> Type = getMapKeyType_ |> cacheResult
-    let getMapValueType : Type -> Type = getMapValueType_ |> cacheResult
-    let getMapKvpTupleType : Type -> Type = getMapKvpTupleType_ |> cacheResult
+    let isMap: Type -> bool = isMap_ |> cacheResult
+    let getMapKeyType: Type -> Type = getMapKeyType_ |> cacheResult
+    let getMapValueType: Type -> Type = getMapValueType_ |> cacheResult
+    let getMapKvpTupleType: Type -> Type = getMapKvpTupleType_ |> cacheResult
 
     let unwrapOption (t: Type) (value: obj) : obj option =
         let _, fields = FSharpValue.GetUnionFields(value, t)

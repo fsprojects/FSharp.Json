@@ -99,15 +99,14 @@ type JsonPath =
             let value = new StringBuilder()
 
             this.path
-            |> List.iteri
-                (fun index location ->
-                    match location with
-                    | Field theProperty ->
-                        if index <> 0 then
-                            value.Append "." |> ignore
+            |> List.iteri (fun index location ->
+                match location with
+                | Field theProperty ->
+                    if index <> 0 then
+                        value.Append "." |> ignore
 
-                        value.Append theProperty |> ignore
-                    | ArrayItem item -> item |> sprintf "[%i]" |> value.Append |> ignore)
+                    value.Append theProperty |> ignore
+                | ArrayItem item -> item |> sprintf "[%i]" |> value.Append |> ignore)
 
             value.ToString()
 
