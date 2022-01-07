@@ -48,13 +48,15 @@ type UnionMode =
     | CaseKeyAsFieldName = 0
     /// Serialize union case key as JSON field value.
     | CaseKeyAsFieldValue = 1
+    /// Serialize union case key as discriminator field value.
+    | CaseKeyDiscriminatorField = 2
 
 /// Attribute customizing serialization of union types
 type JsonUnion() =
     inherit Attribute()
     /// Controls how to serialize cases of union type
     member val public Mode: UnionMode = UnionMode.CaseKeyAsFieldName with get, set
-    /// Field name used for case name. Applicable only when Mode set to CaseKeyAsFieldValue. Default value is "case".
+    /// Field name used for case name. Applicable only when Mode set to CaseKeyAsFieldValue or CaseKeyDiscriminatorField. Default value is "case".
     member val public CaseKeyField: string = "case" with get, set
     /// Field name used for case value. Applicable only when Mode set to CaseKeyAsFieldValue. Default value is "value".
     member val public CaseValueField: string = "value" with get, set
