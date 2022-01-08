@@ -166,7 +166,7 @@ option | option is not represented by itself<br>`None` value might be represente
 tuple | list
 record | object
 map | object
-array<br>list | list
+array<br>list<br>ResizeArray | list
 union | object with special structure<br>read more in [Unions](#unions) section
 obj | read [Untyped Data](#untyped-data) section
 
