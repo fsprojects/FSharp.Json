@@ -18,6 +18,11 @@ module internal Reflection =
     let isList_ (t: Type) =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<List<_>>
 
+    let getType (o: obj) =
+        match o with
+        | null -> typeof<unit>
+        | _ -> o.GetType()
+
     let getListType_ (itemType: Type) =
         typedefof<List<_>>.MakeGenericType([| itemType |])
 

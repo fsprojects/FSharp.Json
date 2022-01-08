@@ -58,7 +58,7 @@ module internal Core =
         | converterType ->
             let transform = getTransform converterType
             let value = transform.toTargetType value
-            let valueType = value.GetType()
+            let valueType = getType value
             (valueType, value)
 
     let getEnumMode (config: JsonConfig) (jsonField: JsonField) =
@@ -96,7 +96,7 @@ module internal Core =
         let getUntypedType (t: Type) (value: obj): Type =
             if t = typeof<obj> then
                 if config.allowUntyped then
-                    value.GetType()
+                    getType value
                 else
                     failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
             else t
@@ -107,6 +107,8 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType t value
                 match t with
+                | t when t = typeof<unit> ->
+                    JsonValue.Null
                 | t when t = typeof<uint16> ->
                     JsonValue.Number (decimal (value :?> uint16))
                 | t when t = typeof<int16> ->
@@ -189,7 +191,7 @@ module internal Core =
             let items =
                 values.Cast<Object>()
                 |> Seq.map (fun value -> 
-                    serializeUnwrapOption (value.GetType()) JsonField.Default value)
+                    serializeUnwrapOption (getType value) JsonField.Default value)
                 |> Seq.map (Option.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
@@ -208,7 +210,7 @@ module internal Core =
                 |> Seq.map (fun kvp ->
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
-                    let jvalue = serializeUnwrapOption (value.GetType()) JsonField.Default value
+                    let jvalue = serializeUnwrapOption (getType value) JsonField.Default value
                     (key, Option.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
