@@ -1,5 +1,7 @@
 ﻿namespace FSharp.Json
 
+open FSharp.Json.Internalized.FSharp.Data
+
 module internal Core =
     open System
     open System.Globalization
@@ -249,6 +251,7 @@ module internal Core =
                         let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
                         let jvalue = (jsonUnion.CaseValueField, jvalue)
                         JsonValue.Record [| jkey; jvalue |]
+                    | UnionMode.AsValue -> jvalue
                     | UnionMode.CaseKeyDiscriminatorField ->
                         match jvalue with
                         | JsonValue.Record jrecord ->

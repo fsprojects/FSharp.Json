@@ -95,7 +95,24 @@ module Union =
         let actual = Json.serializeU value
         let expected = """{"casekey":"StringCase","casevalue":"The string"}"""
         Assert.AreEqual(expected, actual)
-
+        
+    [<JsonUnion(Mode = UnionMode.AsValue)>]
+    type AsValueUnion =
+    | StringCase of string
+    | IntCase of int
+    
+    type RecordWithAsValueUnion = {
+        StringValue : AsValueUnion
+        IntValue : AsValueUnion
+    }
+    
+    [<Test>]
+    let ``AsValue Union serialization`` () =
+        let record = { StringValue = StringCase "String"; IntValue = IntCase 1 }
+        let actual = Json.serializeU record
+        let expected = """{"StringValue":"String","IntValue":1}"""
+        Assert.AreEqual(expected, actual)
+    
     [<Test>]
     let ``Union key-value deserialization`` () =
         let expected = TheAnnotatedUnion.StringCase "The string"
