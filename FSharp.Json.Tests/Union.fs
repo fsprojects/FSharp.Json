@@ -107,11 +107,19 @@ module Union =
     }
     
     [<Test>]
-    let ``AsValue Union serialization`` () =
+    let ``Union AsValue serialization`` () =
         let record = { StringValue = StringCase "String"; IntValue = IntCase 1 }
         let actual = Json.serializeU record
         let expected = """{"StringValue":"String","IntValue":1}"""
         Assert.AreEqual(expected, actual)
+    
+    [<Test>]
+    let ``Union AsValue deserialization`` () =
+        let json = """{"StringValue":"String"}"""
+        let ex = Assert.Throws<JsonDeserializationError>(fun () -> Json.deserialize<RecordWithAsValueUnion> json |> ignore)
+        Assert.IsNotNull(ex)
+        let expectedPath = "StringValue"
+        Assert.AreEqual(expectedPath, ex.Path.toString())
     
     [<Test>]
     let ``Union key-value deserialization`` () =
