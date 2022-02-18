@@ -105,7 +105,7 @@ The core of FSharp.Json library is located in single [Core.fs file][core].
   [reflection]: https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/reflection
   [fsharp_data]: https://fsprojects.github.io/FSharp.Data/
   [jsonvalue_type]: https://fsprojects.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html
-  [core]: https://github.com/saerosV/FSharp.Json/blob/master/FSharp.Json/Core.fs
+  [core]: https://github.com/vsapronov/FSharp.Json/blob/735a312922ef701ef2fcc5379c44d5c483413bae/FSharp.Json/Core.fs
 
 ## Documentation
 
@@ -594,7 +594,7 @@ let deserialized = Json.deserialize<TheUnion> json
 What if some data needed to be represented as a different type then the default JSON type?
 If changing type of the member in F# is not an option then type transform can help.
 
-Any data member is translated F# Type -> JSON type by [default](supported-types) types mapping.
+Any data member is translated F# Type -> JSON type by [default](#supported-types) types mapping.
 [Type Transform](FSharp.Json/InterfaceTypes.fs) is applied in the middle of this translation: F# Type -> Alternative F# Type -> JSON type.
 Alternative F# Type -> JSON type is still done by default types mapping, type transform is responsible for F# Type -> Alternative F# Type.
 
@@ -728,7 +728,7 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [readme]: tree/master/README.md
+  [readme]: README.md 
   [gh]: https://github.com/vsapronov/FSharp.Json
   [issues]: https://github.com/vsapronov/FSharp.Json/issues
   [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
