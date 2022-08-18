@@ -245,11 +245,11 @@ type private JsonParser(jsonText:string, cultureInfo, tolerateErrors) =
         let len = i - start
         let sub = s.Substring(start,len)
         match TextConversions.AsDecimal cultureInfo sub with
-        | Some x -> JsonValue.Number x
-        | _ ->
+        | ValueSome x -> JsonValue.Number x
+        | ValueNone ->
             match TextConversions.AsFloat [| |] (*useNoneForMissingValues*)false cultureInfo sub with
-            | Some x -> JsonValue.Float x
-            | _ -> throw()
+            | ValueSome x -> JsonValue.Float x
+            | ValueNone -> throw()
 
     and parsePair() =
         let key = parseString()
