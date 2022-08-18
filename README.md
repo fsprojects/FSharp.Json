@@ -159,6 +159,7 @@ char | string
 bool | bool
 DateTime | string according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>number epoch time using [transform](#transform)
 DateTimeOffset | string according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>number epoch time using [transform](#transform)
+TimeSpan | string, example "23:00:10"
 Guid | string
 Uri| string using [transform](#transform)
 Enum | string enum value name<br>number enum value<br>read [Enums](#enums) section
