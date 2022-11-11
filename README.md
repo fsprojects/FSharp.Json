@@ -75,6 +75,7 @@ There are several available options to choose from:
 
  * [JSON Type Provider](http://fsharp.github.io/FSharp.Data/library/JsonProvider.html)
  * [Json.Net aka Newtonsoft.Json](https://www.newtonsoft.com/json)
+ * [Fleece](https://github.com/fsprojects/Fleece)
  * [Chiron](https://github.com/xyncro/chiron)
  * [JsonFSharp](https://github.com/PeteProgrammer/JsonFSharp)
  * [Thoth.Json](https://mangelmaxime.github.io/Thoth/json/v2.html#code-sample)
