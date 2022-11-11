@@ -54,3 +54,10 @@ module AsJson =
         let actual = Json.deserialize<AsJsonOptionalRecord> """{"value":null}"""
         let expected = { AsJsonOptionalRecord.value = None }
         Assert.AreEqual(expected, actual)
+
+    [<Test>]
+    let ``AsJson member deserialization untyped - null`` () =
+        let config = JsonConfig.create (jsonFieldNaming = Json.lowerCamelCase, allowUntyped = true )
+        let actual = Json.deserializeEx<obj list> config """[ {"value":null} ]"""
+        let expected = [ Map.ofList [ "value", None ] ]
+        Assert.AreEqual(expected[0], actual[0]) 

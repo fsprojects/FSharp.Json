@@ -289,7 +289,7 @@ module internal Core =
         | JsonValue.Record _ -> typeof<Map<string, obj>>
         | JsonValue.Array _ -> getListType typeof<obj>
         | JsonValue.Boolean _ -> typeof<bool>
-        | _ -> null
+        | _ -> typeof<unit>
                 
     let rec deserialize (config: JsonConfig) (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
         let deserializeEnum (path: JsonPath) (t: Type) (jsonField: JsonField) (jvalue: JsonValue): obj =
@@ -368,6 +368,8 @@ module internal Core =
                         JsonValueHelpers.getDateTimeOffset CultureInfo.InvariantCulture path jvalue :> obj
                     | t when t = typeof<Guid> ->
                         JsonValueHelpers.getGuid path jvalue :> obj
+                    | t when t = typeof<unit> ->
+                        None :> obj
                     | t when t.IsEnum ->
                         deserializeEnum path t jsonField jvalue
                     | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
