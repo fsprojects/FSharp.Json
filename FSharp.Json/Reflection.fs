@@ -35,6 +35,19 @@ module internal Reflection =
     let getListEmptyProperty_ (t: Type) =
         t.GetProperty("Empty")
 
+    let isResizeArray_ (t: Type) =
+        t.IsGenericType
+        && t.GetGenericTypeDefinition() = typedefof<ResizeArray<_>>
+
+    let getResizeArrayType_ (itemType: Type) =
+        typedefof<ResizeArray<_>>.MakeGenericType ([| itemType |])
+
+    let getResizeArrayItemType_ (t: Type) = t.GetGenericArguments().[0]
+
+    let getResizeArrayConstructor_ (t: Type) = t.GetConstructor([||])
+
+    let getResizeArrayAdd_ (t: Type) = t.GetMethod("Add")
+
     let isMap_ (t: Type) =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Map<_,_>>
 
@@ -72,6 +85,13 @@ module internal Reflection =
     let getListConstructor: Type -> MethodInfo = getListConstructor_ |> cacheResult
     let getListEmptyProperty: Type -> PropertyInfo = getListEmptyProperty_ |> cacheResult
 
+    let isResizeArray : Type -> bool = isResizeArray_ |> cacheResult
+    let getResizeArrayType : Type -> Type = getResizeArrayType_ |> cacheResult
+    let getResizeArrayItemType : Type -> Type = getResizeArrayItemType_ |> cacheResult
+    let getResizeArrayAdd : Type -> MethodInfo = getResizeArrayAdd_ |> cacheResult
+    let getResizeArrayConstructor : Type -> ConstructorInfo =
+        getResizeArrayConstructor_ |> cacheResult
+
     let isMap: Type -> bool = isMap_ |> cacheResult
     let getMapKeyType: Type -> Type = getMapKeyType_ |> cacheResult
     let getMapValueType: Type -> Type = getMapValueType_ |> cacheResult
@@ -97,6 +117,22 @@ module internal Reflection =
         let addItem item list = theConstructor.Invoke (null, [| item; list |])
         let theList = (getListEmptyProperty listType).GetValue(null)
         List.foldBack addItem items theList
+
+    let createResizeArray (itemType: Type) (items: obj list) =
+        let resizeArrayType = getResizeArrayType itemType
+
+        let resizeArrayAdd resizeArray item =
+            (getResizeArrayAdd resizeArrayType)
+                .Invoke(resizeArray, [| item |])
+            |> ignore
+
+            resizeArray
+
+        let newResizeArray =
+            (getResizeArrayConstructor resizeArrayType)
+                .Invoke([||])
+
+        List.fold resizeArrayAdd newResizeArray items
 
     let KvpKey (value: obj): obj =
         let keyProperty = value.GetType().GetProperty("Key")
