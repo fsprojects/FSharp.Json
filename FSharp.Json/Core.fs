@@ -1,5 +1,8 @@
 ﻿namespace FSharp.Json
 
+open FSharp.Json
+open FSharp.Json.Internalized.FSharp.Data
+
 module internal Core =
     open System
     open System.Globalization
@@ -249,6 +252,7 @@ module internal Core =
                         let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
                         let jvalue = (jsonUnion.CaseValueField, jvalue)
                         JsonValue.Record [| jkey; jvalue |]
+                    | UnionMode.AsValue -> jvalue
                     | UnionMode.CaseKeyDiscriminatorField ->
                         match jvalue with
                         | JsonValue.Record jrecord ->
@@ -515,6 +519,7 @@ module internal Core =
                 FSharpValue.MakeUnion (caseInfo, values)
             | _ ->
                 match jvalue with
+                | _ when jsonUnion.Mode = UnionMode.AsValue -> failDeserialization path "Failed to parse union from JSON: Union with AsValue Mode can't be parsed"
                 | JsonValue.String caseName ->
                     FSharpValue.MakeUnion (caseName |> getUnionCaseInfo path t, null)
                 | JsonValue.Record fields ->

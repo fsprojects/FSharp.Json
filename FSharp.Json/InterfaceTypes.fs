@@ -50,6 +50,8 @@ type UnionMode =
     | CaseKeyAsFieldValue = 1
     /// Serialize union case key as discriminator field value.
     | CaseKeyDiscriminatorField = 2
+    /// Serialize union case as value.
+    | AsValue = 3
 
 /// Attribute customizing serialization of union types
 type JsonUnion () =
