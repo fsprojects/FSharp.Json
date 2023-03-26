@@ -12,11 +12,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs" />
+        <Compile Include="GiraffeSerializer.fs" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\FSharp.Json\FSharp.Json.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Giraffe" Version="4.1.0" />
     </ItemGroup>
 
 </Project>
