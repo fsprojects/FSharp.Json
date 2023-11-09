@@ -77,11 +77,11 @@ module internal Reflection =
     let getMapValueType: Type -> Type = getMapValueType_ |> cacheResult
     let getMapKvpTupleType: Type -> Type = getMapKvpTupleType_ |> cacheResult
 
-    let unwrapOption (t: Type) (value: obj): obj option =
+    let unwrapOption (t: Type) (value: obj): obj voption =
         let _, fields = FSharpValue.GetUnionFields(value, t)
         match fields.Length with
-        | 1 -> Some fields.[0]
-        | _ -> None
+        | 1 -> ValueSome fields.[0]
+        | _ -> ValueNone
 
     let optionNone (t: Type): obj =
         let casesInfos = getUnionCases t

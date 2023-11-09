@@ -212,7 +212,7 @@ type private JsonParser(jsonText:string, cultureInfo, tolerateErrors) =
                         elif d >= 'A' && d <= 'F' then int32 d - int32 'A' + 10
                         else failwith "hexdigit"
                     let unicodeChar (s:string) =
-                        if s.Length <> 4 then failwith "unicodeChar";
+                        if s.Length <> 4 then failwithf "unicodeChar (%s)" s;
                         char (hexdigit s.[0] * 4096 + hexdigit s.[1] * 256 + hexdigit s.[2] * 16 + hexdigit s.[3])
                     let ch = unicodeChar (s.Substring(i+2, 4))
                     buf.Append(ch) |> ignore
@@ -220,8 +220,8 @@ type private JsonParser(jsonText:string, cultureInfo, tolerateErrors) =
                 | 'U' ->
                     ensure(i+9 < s.Length)
                     let unicodeChar (s:string) =
-                        if s.Length <> 8 then failwith "unicodeChar";
-                        if s.[0..1] <> "00" then failwith "unicodeChar";
+                        if s.Length <> 8 then failwithf "unicodeChar (%s)" s;
+                        if s.[0..1] <> "00" then failwithf "unicodeChar (%s)" s;
                         UnicodeHelper.getUnicodeSurrogatePair <| System.UInt32.Parse(s, NumberStyles.HexNumber) 
                     let lead, trail = unicodeChar (s.Substring(i+2, 8))
                     buf.Append(lead) |> ignore
@@ -245,10 +245,10 @@ type private JsonParser(jsonText:string, cultureInfo, tolerateErrors) =
         let len = i - start
         let sub = s.Substring(start,len)
         match TextConversions.AsDecimal cultureInfo sub with
-        | Some x -> JsonValue.Number x
+        | ValueSome x -> JsonValue.Number x
         | _ ->
             match TextConversions.AsFloat [| |] (*useNoneForMissingValues*)false cultureInfo sub with
-            | Some x -> JsonValue.Float x
+            | ValueSome x -> JsonValue.Float x
             | _ -> throw()
 
     and parsePair() =

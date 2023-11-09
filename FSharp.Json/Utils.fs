@@ -8,5 +8,5 @@ module internal Conversions =
         // Parse ISO 8601 format, fixing time zone if needed 
         let dateTimeStyles = DateTimeStyles.AllowWhiteSpaces ||| DateTimeStyles.RoundtripKind ||| DateTimeStyles.AssumeUniversal 
         match DateTimeOffset.TryParse(text, cultureInfo, dateTimeStyles) with 
-        | true, d -> Some d 
-        | _ -> None 
+        | true, d -> ValueSome d 
+        | _ -> ValueNone 

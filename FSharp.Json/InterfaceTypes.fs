@@ -77,11 +77,12 @@ with
 
 
 /// Represents one item in [JsonPath]
+[<Struct>]
 type JsonPathItem =
     /// Field in JSON object.
-    | Field of string
+    | Field of field: string
     /// Item in JSON array.
-    | ArrayItem of int
+    | ArrayItem of itm: int
 
 /// Represents path in JSON structure
 type JsonPath = {
@@ -119,6 +120,7 @@ type JsonDeserializationError(path: JsonPath, message: string) =
     member e.Path = path
 
 /// Modes of serialization of option None value
+[<Struct>]
 type SerializeNone =
     /// Serialize None value as null in JSON.
     | Null
@@ -126,6 +128,7 @@ type SerializeNone =
     | Omit
 
 /// Modes of deserialization of option types
+[<Struct>]
 type DeserializeOption =
     /// Allow members with None value to be omitted in JSON.
     | AllowOmit

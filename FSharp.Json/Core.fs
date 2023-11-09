@@ -72,40 +72,41 @@ module internal Core =
     let failSerialization (message: string) =
         raise (new JsonSerializationError(message))
 
-    let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
-        let serializeEnum (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
-            let baseT = Enum.GetUnderlyingType t
-            let enumMode = getEnumMode config jsonField
-            match enumMode with
-            | EnumMode.Value ->
-                match baseT with
-                | t when t = typeof<int> ->
-                    let enumValue = decimal (value :?> int)
-                    JsonValue.Number enumValue
-                | t when t = typeof<byte> ->
-                    let enumValue = decimal (value :?> byte)
-                    JsonValue.Number enumValue
-                | t when t = typeof<char> ->
-                    let enumValue = sprintf "%c" (value :?> char)
-                    JsonValue.String enumValue
-            | EnumMode.Name ->
-                let strvalue = Enum.GetName(t, value)
-                JsonValue.String strvalue
-            | mode -> failSerialization <| sprintf "Failed to serialize enum %s, unsupported enum mode: %A" t.Name mode
+    let internal serializeEnum config (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
+        let baseT = Enum.GetUnderlyingType t
+        let enumMode = getEnumMode config jsonField
+        match enumMode with
+        | EnumMode.Value ->
+            match baseT with
+            | t when t = typeof<int> ->
+                let enumValue = decimal (value :?> int)
+                JsonValue.Number enumValue
+            | t when t = typeof<byte> ->
+                let enumValue = decimal (value :?> byte)
+                JsonValue.Number enumValue
+            | t when t = typeof<char> ->
+                let enumValue = sprintf "%c" (value :?> char)
+                JsonValue.String enumValue
+        | EnumMode.Name ->
+            let strvalue = Enum.GetName(t, value)
+            JsonValue.String strvalue
+        | mode -> failSerialization <| sprintf "Failed to serialize enum %s, unsupported enum mode: %A" t.Name mode
 
-        let getUntypedType (t: Type) (value: obj): Type =
-            if t = typeof<obj> then
-                if config.allowUntyped then
-                    getType value
-                else
-                    failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
-            else t
+    let internal getUntypedType config (t: Type) (value: obj): Type =
+        if t = typeof<obj> then
+            if config.allowUntyped then
+                getType value
+            else
+                failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
+        else t
+
+    let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
 
         let serializeNonOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
             match jsonField.AsJson with
             | false ->
                 let t, value = transformToTargetType t value jsonField.Transform
-                let t = getUntypedType t value
+                let t = getUntypedType config t value
                 match t with
                 | t when t = typeof<unit> ->
                     JsonValue.Null
@@ -146,7 +147,7 @@ module internal Core =
                 | t when t = typeof<Guid> ->
                     JsonValue.String ((value :?> Guid).ToString())
                 | t when t.IsEnum ->
-                    serializeEnum t jsonField value
+                    serializeEnum config t jsonField value
                 | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
                     serialize config t value
                 | _ -> failSerialization <| sprintf "Unknown type: %s" t.Name
@@ -157,25 +158,25 @@ module internal Core =
                 with ex ->
                     JsonValue.String value
                         
-        let serializeUnwrapOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue option =
+        let serializeUnwrapOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue voption =
             match t with
             |  t when isOption t ->
                 let unwrapedValue = unwrapOption t value
                 match unwrapedValue with
-                | Some value -> Some (serializeNonOption (getOptionType t) jsonField value)
-                | None -> 
+                | ValueSome value -> ValueSome (serializeNonOption (getOptionType t) jsonField value)
+                | ValueNone -> 
                     match config.serializeNone with
-                    | Null -> Some JsonValue.Null
-                    | Omit -> None
-            | _ -> Some (serializeNonOption t jsonField value)
+                    | Null -> ValueSome JsonValue.Null
+                    | Omit -> ValueNone
+            | _ -> ValueSome (serializeNonOption t jsonField value)
 
         let serializeUnwrapOptionWithNull (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
             match t with
             |  t when isOption t ->
                 let unwrapedValue = unwrapOption t value
                 match unwrapedValue with
-                | Some value -> serializeNonOption (getOptionType t) jsonField value
-                | None -> JsonValue.Null
+                | ValueSome value -> serializeNonOption (getOptionType t) jsonField value
+                | ValueNone -> JsonValue.Null
             | _ -> serializeNonOption t jsonField value
 
         let serializeProperty (therec: obj) (prop: PropertyInfo): (string*JsonValue) option =
@@ -184,15 +185,14 @@ module internal Core =
             let name = getJsonFieldName config jsonField prop
             let jvalue = serializeUnwrapOption prop.PropertyType jsonField propValue
             match jvalue with
-            | Some jvalue -> Some (name, jvalue)
-            | None -> None
+            | ValueSome jvalue -> Some (name, jvalue)
+            | ValueNone -> None
 
         let serializeEnumerable (values: IEnumerable): JsonValue =
             let items =
                 values.Cast<Object>()
                 |> Seq.map (fun value -> 
-                    serializeUnwrapOption (getType value) JsonField.Default value)
-                |> Seq.map (Option.defaultValue JsonValue.Null)
+                    serializeUnwrapOption (getType value) JsonField.Default value |> ValueOption.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeTupleItems (types: Type seq) (values: IEnumerable): JsonValue =
@@ -200,8 +200,7 @@ module internal Core =
                 values.Cast<Object>()
                 |> Seq.zip types
                 |> Seq.map (fun (t, value) -> 
-                    serializeUnwrapOption t JsonField.Default value)
-                |> Seq.map (Option.defaultValue JsonValue.Null)
+                    serializeUnwrapOption t JsonField.Default value |> ValueOption.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeKvpEnumerable (kvps: IEnumerable): JsonValue =
@@ -211,7 +210,7 @@ module internal Core =
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
                     let jvalue = serializeUnwrapOption (getType value) JsonField.Default value
-                    (key, Option.defaultValue JsonValue.Null jvalue)
+                    (key, ValueOption.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
 
@@ -299,17 +298,22 @@ module internal Core =
             | EnumMode.Value ->
                 match baseT with
                 | baseT when baseT = typeof<int> ->
-                    let enumValue = JsonValueHelpers.getInt path jvalue
-                    Enum.ToObject(t, enumValue)
+                    match jvalue with
+                    | JsonValueHelpers.GetInt enumValue -> Enum.ToObject(t, enumValue)
+                    | _ -> JsonValueHelpers.raiseWrongType path "int" jvalue
                 | baseT when baseT = typeof<byte> ->
-                    let enumValue = JsonValueHelpers.getByte path jvalue
-                    Enum.ToObject(t, enumValue)
+                    match jvalue with
+                    | JsonValueHelpers.GetByte enumValue -> Enum.ToObject(t, enumValue)
+                    | _ -> JsonValueHelpers.raiseWrongType path "byte" jvalue
                 | baseT when baseT = typeof<char> ->
-                    let enumValue = JsonValueHelpers.getChar path jvalue
-                    Enum.ToObject(t, enumValue)
+                    match jvalue with
+                    | JsonValueHelpers.GetChar enumValue ->  Enum.ToObject(t, enumValue)
+                    | JsonValueHelpers.GetString v when v.Length > 1 -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" v))
+                    | _ -> JsonValueHelpers.raiseWrongType path "char" jvalue
             | EnumMode.Name ->
-                let valueStr = JsonValueHelpers.getString path jvalue
-                Enum.Parse(t, valueStr)
+                match jvalue with
+                | JsonValueHelpers.GetString valueStr -> Enum.Parse(t, valueStr)
+                | _ -> JsonValueHelpers.raiseWrongType path "string" jvalue
             | mode -> failDeserialization path <| sprintf "Failed to deserialize enum %s, unsupported enum mode: %A" t.Name mode
 
         let getUntypedType (path: JsonPath) (t: Type) (jvalue: JsonValue): Type =
@@ -333,41 +337,78 @@ module internal Core =
                 let jvalue =
                     match t with
                     | t when t = typeof<int16> ->
-                        JsonValueHelpers.getInt16 path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetInt16 v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "int16" jvalue
                     | t when t = typeof<uint16> ->
-                        JsonValueHelpers.getUInt16 path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetUInt16 v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "uint16" jvalue
                     | t when t = typeof<int> ->
-                        JsonValueHelpers.getInt path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetInt v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "int" jvalue
                     | t when t = typeof<uint32> ->
-                        JsonValueHelpers.getUInt32 path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetUInt32 v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "uint32" jvalue
                     | t when t = typeof<int64> ->
-                        JsonValueHelpers.getInt64 path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetInt64 v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "int64" jvalue
                     | t when t = typeof<uint64> ->
-                        JsonValueHelpers.getUInt64 path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetUInt64 v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "uint64" jvalue
                     | t when t = typeof<bigint> ->
-                        JsonValueHelpers.getBigint path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetBigint v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "bigint" jvalue
                     | t when t = typeof<single> ->
-                        JsonValueHelpers.getSingle path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetSingle v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "single" jvalue
                     | t when t = typeof<float> ->
-                        JsonValueHelpers.getFloat path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetFloat v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "float" jvalue
                     | t when t = typeof<decimal> ->
-                        JsonValueHelpers.getDecimal path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetDecimal v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "decimal" jvalue
                     | t when t = typeof<byte> ->
-                        JsonValueHelpers.getByte path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetByte v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "byte" jvalue
                     | t when t = typeof<sbyte> ->
-                        JsonValueHelpers.getSByte path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetSByte v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "sbyte" jvalue
                     | t when t = typeof<bool> ->
-                        JsonValueHelpers.getBool path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetBool v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "bool" jvalue
                     | t when t = typeof<string> ->
-                        JsonValueHelpers.getString path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetString v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "string" jvalue
                     | t when t = typeof<char> ->
-                        JsonValueHelpers.getChar path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetChar v -> v :> obj
+                        | JsonValueHelpers.GetString v when v.Length > 1 -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" v))
+                        | _ -> JsonValueHelpers.raiseWrongType path "char" jvalue
                     | t when t = typeof<DateTime> ->
-                        JsonValueHelpers.getDateTime CultureInfo.InvariantCulture path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetDateTime CultureInfo.InvariantCulture v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "DateTime" jvalue
                     | t when t = typeof<DateTimeOffset> ->
-                        JsonValueHelpers.getDateTimeOffset CultureInfo.InvariantCulture path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetDateTimeOffset CultureInfo.InvariantCulture v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "DateTimeOffset" jvalue
                     | t when t = typeof<Guid> ->
-                        JsonValueHelpers.getGuid path jvalue :> obj
+                        match jvalue with
+                        | JsonValueHelpers.GetGuid v -> v :> obj
+                        | _ -> JsonValueHelpers.raiseWrongType path "Guid" jvalue
                     | t when t.IsEnum ->
                         deserializeEnum path t jsonField jvalue
                     | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
@@ -522,14 +563,16 @@ module internal Core =
                     | UnionMode.CaseKeyDiscriminatorField ->
                         let caseKeyFieldName, caseKeyFieldValue = mustFindField path jsonUnion.CaseKeyField fields
                         let caseNamePath = caseKeyFieldName |> JsonPathItem.Field |> path.createNew
-                        let jCaseName = caseKeyFieldValue |> JsonValueHelpers.getString caseNamePath
-                        makeUnion path t jCaseName jvalue
+                        match caseKeyFieldValue with 
+                        | JsonValueHelpers.GetString jCaseName -> makeUnion path t jCaseName jvalue
+                        | _ -> JsonValueHelpers.raiseWrongType path "string" jvalue
                     | UnionMode.CaseKeyAsFieldValue ->
                         let caseKeyFieldName, caseKeyFieldValue = mustFindField path jsonUnion.CaseKeyField fields
                         let _, jCaseValue = mustFindField path jsonUnion.CaseValueField fields
-                        let caseNamePath = caseKeyFieldName |> JsonPathItem.Field |> path.createNew                        
-                        let jCaseName = caseKeyFieldValue |> JsonValueHelpers.getString caseNamePath
-                        makeUnion path t jCaseName jCaseValue
+                        let caseNamePath = caseKeyFieldName |> JsonPathItem.Field |> path.createNew 
+                        match caseKeyFieldValue with
+                        | JsonValueHelpers.GetString jCaseName -> makeUnion path t jCaseName jCaseValue
+                        | _ -> JsonValueHelpers.raiseWrongType path "string" jvalue
                     | UnionMode.CaseKeyAsFieldName ->
                         match fields with
                         | [| (jCaseName, jCaseValue) |] ->

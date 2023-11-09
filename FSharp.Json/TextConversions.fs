@@ -14,14 +14,16 @@ open System.Text.RegularExpressions
 module private Helpers =
 
   /// Convert the result of TryParse to option type
-  let asOption = function true, v -> Some v | _ -> None
+  let asOption = function true, v -> ValueSome v | _ -> ValueNone
 
+  [<return: Struct>]
   let (|StringEqualsIgnoreCase|_|) (s1:string) s2 = 
     if s1.Equals(s2, StringComparison.OrdinalIgnoreCase) 
-      then Some () else None
+      then ValueSome () else ValueNone
 
+  [<return: Struct>]
   let (|OneOfIgnoreCase|_|) set str = 
-    if Array.exists (fun s -> StringComparer.OrdinalIgnoreCase.Compare(s, str) = 0) set then Some() else None
+    if Array.exists (fun s -> StringComparer.OrdinalIgnoreCase.Compare(s, str) = 0) set then ValueSome() else ValueNone
 
   let regexOptions = 
 #if FX_NO_REGEX_COMPILATION
@@ -73,10 +75,10 @@ type internal TextConversions private() =
   /// if useNoneForMissingValues is true, NAs are returned as None, otherwise Some Double.NaN is used
   static member AsFloat missingValues useNoneForMissingValues cultureInfo (text:string) = 
     match text.Trim() with
-    | OneOfIgnoreCase missingValues -> if useNoneForMissingValues then None else Some Double.NaN
+    | OneOfIgnoreCase missingValues -> if useNoneForMissingValues then ValueNone else ValueSome Double.NaN
     | _ -> Double.TryParse(text, NumberStyles.Any, cultureInfo)
            |> asOption
-           |> Option.bind (fun f -> if useNoneForMissingValues && Double.IsNaN f then None else Some f)
+           |> ValueOption.bind (fun f -> if useNoneForMissingValues && Double.IsNaN f then ValueNone else ValueSome f)
   
   static member AsBoolean (text:string) =     
     match text.Trim() with
@@ -94,17 +96,17 @@ type internal TextConversions private() =
       matchesMS.Groups.[1].Value 
       |> Double.Parse 
       |> DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds 
-      |> Some
+      |> ValueSome
     else
       // Parse ISO 8601 format, fixing time zone if needed
       let dateTimeStyles = DateTimeStyles.AllowWhiteSpaces ||| DateTimeStyles.RoundtripKind
       match DateTime.TryParse(text, cultureInfo, dateTimeStyles) with
       | true, d ->
           if d.Kind = DateTimeKind.Unspecified then 
-            new DateTime(d.Ticks, DateTimeKind.Local) |> Some
+            new DateTime(d.Ticks, DateTimeKind.Local) |> ValueSome
           else 
-            Some d
-      | _ -> None
+            ValueSome d
+      | _ -> ValueNone
 
   static member AsGuid (text:string) = 
     Guid.TryParse(text.Trim()) |> asOption
