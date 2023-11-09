@@ -72,40 +72,41 @@ module internal Core =
     let failSerialization (message: string) =
         raise (new JsonSerializationError(message))
 
-    let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
-        let serializeEnum (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
-            let baseT = Enum.GetUnderlyingType t
-            let enumMode = getEnumMode config jsonField
-            match enumMode with
-            | EnumMode.Value ->
-                match baseT with
-                | t when t = typeof<int> ->
-                    let enumValue = decimal (value :?> int)
-                    JsonValue.Number enumValue
-                | t when t = typeof<byte> ->
-                    let enumValue = decimal (value :?> byte)
-                    JsonValue.Number enumValue
-                | t when t = typeof<char> ->
-                    let enumValue = sprintf "%c" (value :?> char)
-                    JsonValue.String enumValue
-            | EnumMode.Name ->
-                let strvalue = Enum.GetName(t, value)
-                JsonValue.String strvalue
-            | mode -> failSerialization <| sprintf "Failed to serialize enum %s, unsupported enum mode: %A" t.Name mode
+    let internal serializeEnum config (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
+        let baseT = Enum.GetUnderlyingType t
+        let enumMode = getEnumMode config jsonField
+        match enumMode with
+        | EnumMode.Value ->
+            match baseT with
+            | t when t = typeof<int> ->
+                let enumValue = decimal (value :?> int)
+                JsonValue.Number enumValue
+            | t when t = typeof<byte> ->
+                let enumValue = decimal (value :?> byte)
+                JsonValue.Number enumValue
+            | t when t = typeof<char> ->
+                let enumValue = sprintf "%c" (value :?> char)
+                JsonValue.String enumValue
+        | EnumMode.Name ->
+            let strvalue = Enum.GetName(t, value)
+            JsonValue.String strvalue
+        | mode -> failSerialization <| sprintf "Failed to serialize enum %s, unsupported enum mode: %A" t.Name mode
 
-        let getUntypedType (t: Type) (value: obj): Type =
-            if t = typeof<obj> then
-                if config.allowUntyped then
-                    getType value
-                else
-                    failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
-            else t
+    let internal getUntypedType config (t: Type) (value: obj): Type =
+        if t = typeof<obj> then
+            if config.allowUntyped then
+                getType value
+            else
+                failSerialization <| "Failed to serialize untyped data, allowUntyped set to false"
+        else t
+
+    let rec serialize (config: JsonConfig) (t: Type) (value: obj): JsonValue =
 
         let serializeNonOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
             match jsonField.AsJson with
             | false ->
                 let t, value = transformToTargetType t value jsonField.Transform
-                let t = getUntypedType t value
+                let t = getUntypedType config t value
                 match t with
                 | t when t = typeof<unit> ->
                     JsonValue.Null
@@ -146,7 +147,7 @@ module internal Core =
                 | t when t = typeof<Guid> ->
                     JsonValue.String ((value :?> Guid).ToString())
                 | t when t.IsEnum ->
-                    serializeEnum t jsonField value
+                    serializeEnum config t jsonField value
                 | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
                     serialize config t value
                 | _ -> failSerialization <| sprintf "Unknown type: %s" t.Name
@@ -157,25 +158,25 @@ module internal Core =
                 with ex ->
                     JsonValue.String value
                         
-        let serializeUnwrapOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue option =
+        let serializeUnwrapOption (t: Type) (jsonField: JsonField) (value: obj): JsonValue voption =
             match t with
             |  t when isOption t ->
                 let unwrapedValue = unwrapOption t value
                 match unwrapedValue with
-                | Some value -> Some (serializeNonOption (getOptionType t) jsonField value)
-                | None -> 
+                | ValueSome value -> ValueSome (serializeNonOption (getOptionType t) jsonField value)
+                | ValueNone -> 
                     match config.serializeNone with
-                    | Null -> Some JsonValue.Null
-                    | Omit -> None
-            | _ -> Some (serializeNonOption t jsonField value)
+                    | Null -> ValueSome JsonValue.Null
+                    | Omit -> ValueNone
+            | _ -> ValueSome (serializeNonOption t jsonField value)
 
         let serializeUnwrapOptionWithNull (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
             match t with
             |  t when isOption t ->
                 let unwrapedValue = unwrapOption t value
                 match unwrapedValue with
-                | Some value -> serializeNonOption (getOptionType t) jsonField value
-                | None -> JsonValue.Null
+                | ValueSome value -> serializeNonOption (getOptionType t) jsonField value
+                | ValueNone -> JsonValue.Null
             | _ -> serializeNonOption t jsonField value
 
         let serializeProperty (therec: obj) (prop: PropertyInfo): (string*JsonValue) option =
@@ -184,14 +185,14 @@ module internal Core =
             let name = getJsonFieldName config jsonField prop
             let jvalue = serializeUnwrapOption prop.PropertyType jsonField propValue
             match jvalue with
-            | Some jvalue -> Some (name, jvalue)
-            | None -> None
+            | ValueSome jvalue -> Some (name, jvalue)
+            | ValueNone -> None
 
         let serializeEnumerable (values: IEnumerable): JsonValue =
             let items =
                 values.Cast<Object>()
                 |> Seq.map (fun value -> 
-                    serializeUnwrapOption (getType value) JsonField.Default value |> Option.defaultValue JsonValue.Null)
+                    serializeUnwrapOption (getType value) JsonField.Default value |> ValueOption.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeTupleItems (types: Type seq) (values: IEnumerable): JsonValue =
@@ -199,7 +200,7 @@ module internal Core =
                 values.Cast<Object>()
                 |> Seq.zip types
                 |> Seq.map (fun (t, value) -> 
-                    serializeUnwrapOption t JsonField.Default value |> Option.defaultValue JsonValue.Null)
+                    serializeUnwrapOption t JsonField.Default value |> ValueOption.defaultValue JsonValue.Null)
             items |> Array.ofSeq |> JsonValue.Array
 
         let serializeKvpEnumerable (kvps: IEnumerable): JsonValue =
@@ -209,7 +210,7 @@ module internal Core =
                     let key = KvpKey kvp :?> string
                     let value = KvpValue kvp
                     let jvalue = serializeUnwrapOption (getType value) JsonField.Default value
-                    (key, Option.defaultValue JsonValue.Null jvalue)
+                    (key, ValueOption.defaultValue JsonValue.Null jvalue)
                 )
             props|> Array.ofSeq |> JsonValue.Record
 
