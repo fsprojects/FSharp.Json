@@ -8,124 +8,137 @@ module internal JsonValueHelpers =
     let raiseWrongType path typeName jvalue =
         raise(JsonDeserializationError(path, sprintf "Expected type %s is incompatible with jvalue: %A" typeName jvalue))
 
-    let getInt16 (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetInt16|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> int16 value
-        | JsonValue.Float value -> int16 value
-        | _ -> raiseWrongType path "int16" jvalue
+        | JsonValue.Number value -> ValueSome (int16 value)
+        | JsonValue.Float value -> ValueSome (int16 value)
+        | _ -> ValueNone
 
-    let getUInt16 (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetUInt16|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> uint16 value
-        | JsonValue.Float value -> uint16 value
-        | _ -> raiseWrongType path "uint16" jvalue
+        | JsonValue.Number value -> ValueSome (uint16 value)
+        | JsonValue.Float value -> ValueSome (uint16 value)
+        | _ -> ValueNone
         
-    let getInt (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetInt|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> int value
-        | JsonValue.Float value -> int value
-        | _ -> raiseWrongType path "int" jvalue
+        | JsonValue.Number value -> ValueSome (int value)
+        | JsonValue.Float value -> ValueSome (int value)
+        | _ -> ValueNone
 
-    let getUInt32 (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetUInt32|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> uint32 value
-        | JsonValue.Float value -> uint32 value
-        | _ -> raiseWrongType path "uint32" jvalue
+        | JsonValue.Number value -> ValueSome (uint32 value)
+        | JsonValue.Float value -> ValueSome (uint32 value)
+        | _ -> ValueNone
     
-    let getInt64 (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetInt64|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> int64 value
-        | JsonValue.Float value -> int64 value
-        | _ -> raiseWrongType path "int64" jvalue
+        | JsonValue.Number value -> ValueSome (int64 value)
+        | JsonValue.Float value -> ValueSome (int64 value)
+        | _ -> ValueNone
 
-    let getUInt64 (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetUInt64|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> uint64 value
-        | JsonValue.Float value -> uint64 value
-        | _ -> raiseWrongType path "uint64" jvalue
+        | JsonValue.Number value -> ValueSome (uint64 value)
+        | JsonValue.Float value -> ValueSome (uint64 value)
+        | _ -> ValueNone
 
-    let getBigint (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetBigint|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> bigint value
-        | JsonValue.Float value -> bigint value
-        | _ -> raiseWrongType path "bigint" jvalue
+        | JsonValue.Number value -> ValueSome (bigint value)
+        | JsonValue.Float value -> ValueSome (bigint value)
+        | _ -> ValueNone
 
-    let getSingle (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetSingle|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Float value -> single value
-        | JsonValue.Number value -> single value
-        | _ -> raiseWrongType path "single" jvalue
+        | JsonValue.Float value -> ValueSome (single value)
+        | JsonValue.Number value -> ValueSome (single value)
+        | _ -> ValueNone
     
-    let getFloat (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetFloat|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Float value -> value
-        | JsonValue.Number value -> float value
-        | _ -> raiseWrongType path "float" jvalue
+        | JsonValue.Float value -> ValueSome value
+        | JsonValue.Number value -> ValueSome (float value)
+        | _ -> ValueNone
 
-    let getDecimal (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetDecimal|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> value
-        | JsonValue.Float value -> decimal value
-        | _ -> raiseWrongType path "decimal" jvalue
+        | JsonValue.Number value -> ValueSome value
+        | JsonValue.Float value -> ValueSome (decimal value)
+        | _ -> ValueNone
 
-    let getByte (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetByte|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> byte value
-        | JsonValue.Float value -> byte value
-        | _ -> raiseWrongType path "byte" jvalue
+        | JsonValue.Number value -> ValueSome (byte value)
+        | JsonValue.Float value -> ValueSome (byte value)
+        | _ -> ValueNone
 
-    let getSByte (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetSByte|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Number value -> sbyte value
-        | JsonValue.Float value -> sbyte value
-        | _ -> raiseWrongType path "sbyte" jvalue
+        | JsonValue.Number value -> ValueSome (sbyte value)
+        | JsonValue.Float value -> ValueSome (sbyte value)
+        | _ -> ValueNone
     
-    let getBool (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetBool|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Boolean value -> value
-        | _ -> raiseWrongType path "bool" jvalue
+        | JsonValue.Boolean value -> ValueSome value
+        | _ -> ValueNone
 
-    let getString (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetString|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.String value -> value
-        | _ -> raiseWrongType path "string" jvalue
+        | JsonValue.String value -> ValueSome value
+        | _ -> ValueNone
 
-    let getChar (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetChar|_|) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.String value ->
             match value.Length with
-            | 1 -> value.Chars(0)
-            | _ -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" value))
-        | _ -> raiseWrongType path "char" jvalue
+            | 1 -> ValueSome (value.Chars 0)
+            | _ -> ValueNone
+        | _ -> ValueNone
 
-    let getDateTime cultureInfo (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetDateTime|_|) cultureInfo (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.String value -> 
             let jvalue = TextConversions.AsDateTime cultureInfo value
-            match jvalue with
-            | Some jvalue -> jvalue
-            | None -> raiseWrongType path "DateTime" jvalue
-        | _ -> raiseWrongType path "DateTime" jvalue
+            jvalue
+        | _ -> ValueNone
 
-    let getDateTimeOffset cultureInfo (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetDateTimeOffset|_|) cultureInfo (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.String value -> 
             let jvalue = AsDateTimeOffset cultureInfo value
-            match jvalue with
-            | Some jvalue -> jvalue
-            | None -> raiseWrongType path "DateTimeOffset" jvalue
-        | _ -> raiseWrongType path "DateTimeOffset" jvalue
+            jvalue
+        | _ -> ValueNone
 
-    let getGuid (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetGuid|_|) (jvalue: JsonValue) =
         match jvalue with
         | JsonValue.String value -> 
             let jvalue = TextConversions.AsGuid value
-            match jvalue with
-            | Some jvalue -> jvalue
-            | None -> raiseWrongType path "Guid" jvalue
-        | _ -> raiseWrongType path "Guid" jvalue
+            jvalue
+        | _ -> ValueNone
 
-    let getArray (path: JsonPath) (jvalue: JsonValue) =
+    [<return: Struct>]
+    let (|GetArray|_|) (jvalue: JsonValue) =
         match jvalue with
-        | JsonValue.Array arr -> arr
-        | _ -> raiseWrongType path "array" jvalue
+        | JsonValue.Array arr -> ValueSome arr
+        | _ -> ValueNone
