@@ -78,13 +78,13 @@ module internal Core =
         match enumMode with
         | EnumMode.Value ->
             match baseT with
-            | t when t = typeof<int> ->
+            | t when Type.(=)(t, typeof<int>) ->
                 let enumValue = decimal (value :?> int)
                 JsonValue.Number enumValue
-            | t when t = typeof<byte> ->
+            | t when Type.(=)(t, typeof<byte>) ->
                 let enumValue = decimal (value :?> byte)
                 JsonValue.Number enumValue
-            | t when t = typeof<char> ->
+            | t when Type.(=)(t, typeof<char>) ->
                 let enumValue = sprintf "%c" (value :?> char)
                 JsonValue.String enumValue
         | EnumMode.Name ->
@@ -108,43 +108,43 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType config t value
                 match t with
-                | t when t = typeof<unit> ->
+                | t when Type.(=)(t, typeof<unit>) ->
                     JsonValue.Null
-                | t when t = typeof<uint16> ->
+                | t when Type.(=)(t, typeof<uint16>) ->
                     JsonValue.Number (decimal (value :?> uint16))
-                | t when t = typeof<int16> ->
+                | t when Type.(=)(t, typeof<int16>) ->
                     JsonValue.Number (decimal (value :?> int16))
-                | t when t = typeof<int> ->
+                | t when Type.(=)(t, typeof<int>) ->
                     JsonValue.Number (decimal (value :?> int))
-                | t when t = typeof<uint32> ->
+                | t when Type.(=)(t, typeof<uint32>) ->
                     JsonValue.Number (decimal (value :?> uint32))
-                | t when t = typeof<int64> ->
+                | t when Type.(=)(t, typeof<int64>) ->
                     JsonValue.Number (decimal (value :?> int64))
-                | t when t = typeof<uint64> ->
+                | t when Type.(=)(t, typeof<uint64>) ->
                     JsonValue.Number (decimal (value :?> uint64))
-                | t when t = typeof<bigint> ->
+                | t when Type.(=)(t, typeof<bigint>) ->
                     JsonValue.Number (decimal (value :?> bigint))
-                | t when t = typeof<single> ->
+                | t when Type.(=)(t, typeof<single>) ->
                     JsonValue.Float (float (value :?> single))
-                | t when t = typeof<float> ->
+                | t when Type.(=)(t, typeof<float>) ->
                     JsonValue.Float (value :?> float)
-                | t when t = typeof<decimal> ->
+                | t when Type.(=)(t, typeof<decimal>) ->
                     JsonValue.Number (value :?> decimal)
-                | t when t = typeof<byte> ->
+                | t when Type.(=)(t, typeof<byte>) ->
                     JsonValue.Number (decimal (value :?> byte))
-                | t when t = typeof<sbyte> ->
+                | t when Type.(=)(t, typeof<sbyte>) ->
                     JsonValue.Number (decimal (value :?> sbyte))
-                | t when t = typeof<bool> ->
+                | t when Type.(=)(t, typeof<bool>) ->
                     JsonValue.Boolean (value :?> bool)
-                | t when t = typeof<string> ->
+                | t when Type.(=)(t, typeof<string>) ->
                     JsonValue.String (value :?> string)
-                | t when t = typeof<char> ->
+                | t when Type.(=)(t, typeof<char>) ->
                     JsonValue.String (string(value :?> char))
-                | t when t = typeof<DateTime> ->
+                | t when Type.(=)(t, typeof<DateTime>) ->
                     JsonValue.String ((value :?> DateTime).ToString(jsonField.DateTimeFormat))
-                | t when t = typeof<DateTimeOffset> ->
+                | t when Type.(=)(t, typeof<DateTimeOffset>) ->
                     JsonValue.String ((value :?> DateTimeOffset).ToString(jsonField.DateTimeFormat))
-                | t when t = typeof<Guid> ->
+                | t when Type.(=)(t, typeof<Guid>) ->
                     JsonValue.String ((value :?> Guid).ToString())
                 | t when t.IsEnum ->
                     serializeEnum config t jsonField value
@@ -318,7 +318,7 @@ module internal Core =
 
         let getUntypedType (path: JsonPath) (t: Type) (jvalue: JsonValue): Type =
             match t with
-            | t when t = typeof<obj> ->
+            | t when Type.(=)(t, typeof<obj>) ->
                 if config.allowUntyped then
                     getJsonValueType jvalue
                 else
@@ -336,76 +336,76 @@ module internal Core =
                 let t = getUntypedType path t jvalue
                 let jvalue =
                     match t with
-                    | t when t = typeof<int16> ->
+                    | t when Type.(=)(t, typeof<int16>) ->
                         match jvalue with
                         | JsonValueHelpers.GetInt16 v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "int16" jvalue
-                    | t when t = typeof<uint16> ->
+                    | t when Type.(=)(t, typeof<uint16>) ->
                         match jvalue with
                         | JsonValueHelpers.GetUInt16 v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "uint16" jvalue
-                    | t when t = typeof<int> ->
+                    | t when Type.(=)(t, typeof<int>) ->
                         match jvalue with
                         | JsonValueHelpers.GetInt v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "int" jvalue
-                    | t when t = typeof<uint32> ->
+                    | t when Type.(=)(t, typeof<uint32>) ->
                         match jvalue with
                         | JsonValueHelpers.GetUInt32 v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "uint32" jvalue
-                    | t when t = typeof<int64> ->
+                    | t when Type.(=)(t, typeof<int64>) ->
                         match jvalue with
                         | JsonValueHelpers.GetInt64 v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "int64" jvalue
-                    | t when t = typeof<uint64> ->
+                    | t when Type.(=)(t, typeof<uint64>) ->
                         match jvalue with
                         | JsonValueHelpers.GetUInt64 v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "uint64" jvalue
-                    | t when t = typeof<bigint> ->
+                    | t when Type.(=)(t, typeof<bigint>) ->
                         match jvalue with
                         | JsonValueHelpers.GetBigint v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "bigint" jvalue
-                    | t when t = typeof<single> ->
+                    | t when Type.(=)(t, typeof<single>) ->
                         match jvalue with
                         | JsonValueHelpers.GetSingle v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "single" jvalue
-                    | t when t = typeof<float> ->
+                    | t when Type.(=)(t, typeof<float>) ->
                         match jvalue with
                         | JsonValueHelpers.GetFloat v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "float" jvalue
-                    | t when t = typeof<decimal> ->
+                    | t when Type.(=)(t, typeof<decimal>) ->
                         match jvalue with
                         | JsonValueHelpers.GetDecimal v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "decimal" jvalue
-                    | t when t = typeof<byte> ->
+                    | t when Type.(=)(t, typeof<byte>) ->
                         match jvalue with
                         | JsonValueHelpers.GetByte v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "byte" jvalue
-                    | t when t = typeof<sbyte> ->
+                    | t when Type.(=)(t, typeof<sbyte>) ->
                         match jvalue with
                         | JsonValueHelpers.GetSByte v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "sbyte" jvalue
-                    | t when t = typeof<bool> ->
+                    | t when Type.(=)(t, typeof<bool>) ->
                         match jvalue with
                         | JsonValueHelpers.GetBool v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "bool" jvalue
-                    | t when t = typeof<string> ->
+                    | t when Type.(=)(t, typeof<string>) ->
                         match jvalue with
                         | JsonValueHelpers.GetString v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "string" jvalue
-                    | t when t = typeof<char> ->
+                    | t when Type.(=)(t, typeof<char>) ->
                         match jvalue with
                         | JsonValueHelpers.GetChar v -> v :> obj
                         | JsonValueHelpers.GetString v when v.Length > 1 -> raise(JsonDeserializationError(path, sprintf "Expected string with single character, got jvalue: %s" v))
                         | _ -> JsonValueHelpers.raiseWrongType path "char" jvalue
-                    | t when t = typeof<DateTime> ->
+                    | t when Type.(=)(t, typeof<DateTime>) ->
                         match jvalue with
                         | JsonValueHelpers.GetDateTime CultureInfo.InvariantCulture v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "DateTime" jvalue
-                    | t when t = typeof<DateTimeOffset> ->
+                    | t when Type.(=)(t, typeof<DateTimeOffset>) ->
                         match jvalue with
                         | JsonValueHelpers.GetDateTimeOffset CultureInfo.InvariantCulture v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "DateTimeOffset" jvalue
-                    | t when t = typeof<Guid> ->
+                    | t when Type.(=)(t, typeof<Guid>) ->
                         match jvalue with
                         | JsonValueHelpers.GetGuid v -> v :> obj
                         | _ -> JsonValueHelpers.raiseWrongType path "Guid" jvalue
