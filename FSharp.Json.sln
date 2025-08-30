@@ -13,6 +13,8 @@ ProjectSection(SolutionItems) = preProject
 	RELEASE_NOTES.md = RELEASE_NOTES.md
 EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Json.Benchmarks", "FSharp.Json.Benchmarks\FSharp.Json.Benchmarks.fsproj", "{B36BCE2A-84E8-4A34-9BF5-2ECB5DC91F58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36BCE2A-84E8-4A34-9BF5-2ECB5DC91F58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36BCE2A-84E8-4A34-9BF5-2ECB5DC91F58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36BCE2A-84E8-4A34-9BF5-2ECB5DC91F58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36BCE2A-84E8-4A34-9BF5-2ECB5DC91F58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
