@@ -35,3 +35,14 @@ module DateTimeFormat =
         let value = Json.deserialize<DateTimeFormat> expected
         let actual = Json.serializeU(value)
         Assert.AreEqual(expected, actual)
+        
+    type TimeSpanFormat = {        
+        value: TimeSpan
+    }
+        
+    [<Test>]
+    let ``TimeSpan member serialization`` () =
+        let expected = """{"value":"00:00:30"}"""
+        let value = Json.deserialize<TimeSpanFormat> expected
+        let actual = Json.serializeU(value)
+        Assert.AreEqual(expected, actual)        

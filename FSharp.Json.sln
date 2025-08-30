@@ -13,8 +13,6 @@ ProjectSection(SolutionItems) = preProject
 	RELEASE_NOTES.md = RELEASE_NOTES.md
 EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Json.Giraffe", "FSharp.Json.Giraffe\FSharp.Json.Giraffe.fsproj", "{B650B05D-56FC-48A8-B3F4-90973ABD4138}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{B3C2447E-A02D-419C-8A91-A50AB902C4B5}"
 ProjectSection(SolutionItems) = preProject
 	.circleci\config.yml = .circleci\config.yml
@@ -34,10 +32,6 @@ Global
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D95196B-06AF-4158-9FF0-FAF132900A21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B650B05D-56FC-48A8-B3F4-90973ABD4138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B650B05D-56FC-48A8-B3F4-90973ABD4138}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B650B05D-56FC-48A8-B3F4-90973ABD4138}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B650B05D-56FC-48A8-B3F4-90973ABD4138}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B3C2447E-A02D-419C-8A91-A50AB902C4B5} = {60940FD7-1705-49D4-976E-64AC5E15D731}
