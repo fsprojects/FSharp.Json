@@ -14,7 +14,7 @@ open System.Text.RegularExpressions
 module private Helpers =
 
   /// Convert the result of TryParse to option type
-  let asOption = function true, v -> Some v | _ -> None
+  let asOption = function true, v -> ValueSome v | _ -> ValueNone
 
   let (|StringEqualsIgnoreCase|_|) (s1:string) s2 = 
     if s1.Equals(s2, StringComparison.OrdinalIgnoreCase) 
@@ -73,10 +73,10 @@ type internal TextConversions private() =
   /// if useNoneForMissingValues is true, NAs are returned as None, otherwise Some Double.NaN is used
   static member AsFloat missingValues useNoneForMissingValues cultureInfo (text:string) = 
     match text.Trim() with
-    | OneOfIgnoreCase missingValues -> if useNoneForMissingValues then None else Some Double.NaN
+    | OneOfIgnoreCase missingValues -> if useNoneForMissingValues then ValueNone else ValueSome Double.NaN
     | _ -> Double.TryParse(text, NumberStyles.Any, cultureInfo)
            |> asOption
-           |> Option.bind (fun f -> if useNoneForMissingValues && Double.IsNaN f then None else Some f)
+           |> ValueOption.bind (fun f -> if useNoneForMissingValues && Double.IsNaN f then ValueNone else ValueSome f)
   
   static member AsBoolean (text:string) =     
     match text.Trim() with
@@ -106,6 +106,9 @@ type internal TextConversions private() =
             Some d
       | _ -> None
 
+  static member AsTimeSpan (text: string) =
+    TimeSpan.TryParse(text) |> asOption
+  
   static member AsGuid (text:string) = 
     Guid.TryParse(text.Trim()) |> asOption
 
