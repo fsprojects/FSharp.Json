@@ -252,7 +252,7 @@ module internal Core =
                     | UnionMode.CaseKeyAsFieldName -> JsonValue.Record [| (theCase, jValue) |]
                     | UnionMode.CaseKeyAsFieldValue ->
                         let jkey = (jsonUnion.CaseKeyField, JsonValue.String theCase)
-                        let jValue = (jsonUnion.CaseValueField, jvalue)
+                        let jValue = (jsonUnion.CaseValueField, jValue)
                         JsonValue.Record [| jkey; jValue |]
                     | UnionMode.AsValue -> jValue
                     | UnionMode.CaseKeyDiscriminatorField ->
