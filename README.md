@@ -73,8 +73,9 @@ Why we need yet another F# JSON serialization library?
 Well, if you happy with the library that you are using currently then probably you do not need another one.
 There are several available options to choose from:
 
- * [JSON Type Provider](http://fsharp.github.io/FSharp.Data/library/JsonProvider.html)
+ * [JSON Type Provider](https://fsprojects.github.io/FSharp.Data/library/JsonProvider.html)
  * [Json.Net aka Newtonsoft.Json](https://www.newtonsoft.com/json)
+ * [Fleece](https://github.com/fsprojects/Fleece)
  * [Chiron](https://github.com/xyncro/chiron)
  * [JsonFSharp](https://github.com/PeteProgrammer/JsonFSharp)
  * [Thoth.Json](https://mangelmaxime.github.io/Thoth/json/v2.html#code-sample)
@@ -103,9 +104,9 @@ The [JsonValue type][jsonvalue_type] is internalized in the FSharp.Json library.
 The core of FSharp.Json library is located in single [Core.fs file][core].
 
   [reflection]: https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/reflection
-  [fsharp_data]: http://fsharp.github.io/FSharp.Data/
-  [jsonvalue_type]: http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html
-  [core]: https://github.com/vsapronov/FSharp.Json/blob/master/src/FSharp.Json/Core.fs
+  [fsharp_data]: https://fsprojects.github.io/FSharp.Data/
+  [jsonvalue_type]: https://fsprojects.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html
+  [core]: https://github.com/vsapronov/FSharp.Json/blob/735a312922ef701ef2fcc5379c44d5c483413bae/FSharp.Json/Core.fs
 
 ## Documentation
 
@@ -159,6 +160,7 @@ char | string
 bool | bool
 DateTime | string according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>number epoch time using [transform](#transform)
 DateTimeOffset | string according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>number epoch time using [transform](#transform)
+TimeSpan | string, example "23:00:10"
 Guid | string
 Uri| string using [transform](#transform)
 Enum | string enum value name<br>number enum value<br>read [Enums](#enums) section
@@ -421,7 +423,7 @@ let deserialized = Json.deserialize<TheNumberEnum> json
 
 Sometimes it's needed always serialize enum value as it's value.
 Annotating each member of any enum type would be cumbersome.
-[JsonConfig]() allows to override default enum behaviour.
+[JsonConfig](https://github.com/vsapronov/FSharp.Json/blob/master/FSharp.Json/InterfaceTypes.fs) allows to override default enum behaviour.
 
 Check the example below:
 
@@ -590,11 +592,11 @@ let deserialized = Json.deserialize<TheUnion> json
 
 ## Type Transform
 
-[Supported types](supported-types) section maps F# types into JSON types.
+[Supported types](#supported-types) section maps F# types into JSON types.
 What if some data needed to be represented as a different type then the default JSON type?
 If changing type of the member in F# is not an option then type transform can help.
 
-Any data member is translated F# Type -> JSON type by [default](supported-types) types mapping.
+Any data member is translated F# Type -> JSON type by [default](#supported-types) types mapping.
 [Type Transform](FSharp.Json/InterfaceTypes.fs) is applied in the middle of this translation: F# Type -> Alternative F# Type -> JSON type.
 Alternative F# Type -> JSON type is still done by default types mapping, type transform is responsible for F# Type -> Alternative F# Type.
 
@@ -728,7 +730,7 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [readme]: tree/master/README.md
+  [readme]: README.md 
   [gh]: https://github.com/vsapronov/FSharp.Json
   [issues]: https://github.com/vsapronov/FSharp.Json/issues
   [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
