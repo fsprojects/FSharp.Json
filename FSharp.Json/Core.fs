@@ -149,7 +149,7 @@ module internal Core =
                     JsonValue.String ((value :?> Guid).ToString())                                    
                 | t when t.IsEnum ->
                     serializeEnum t jsonField value
-                | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
+                | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t || isResizeArray t ->
                     serialize config t value
                 | _ -> failSerialization $"Unknown type: %s{t.Name}"
             | true ->
@@ -265,6 +265,7 @@ module internal Core =
         | t when isList t -> serializeEnumerable (value :?> IEnumerable)
         | t when isTuple t -> serializeTupleItems (getTupleElements t) (FSharpValue.GetTupleFields value)
         | t when isUnion t -> serializeUnion t value
+        | t when isResizeArray t -> serializeEnumerable (value :?> IEnumerable)
         | t ->
             let msg = $"Failed to serialize, must be one of following types: record, map, array, list, tuple, union. Type is: %s{t.Name}."
             failSerialization msg 
@@ -374,7 +375,7 @@ module internal Core =
                         JsonValueHelpers.getGuid path jValue :> obj                                            
                     | t when t.IsEnum ->
                         deserializeEnum path t jsonField jValue
-                    | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
+                    | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t || isResizeArray t ->
                         deserialize config path t jValue
                     | _ -> failDeserialization path $"Not supported type: %s{t.Name}"
                 transformFromTargetType jsonField.Transform jValue
@@ -430,6 +431,19 @@ module internal Core =
                 let arrayValues = deserializeArrayItems path itemType jvalues
                 arrayValues |> List.ofSeq |> createList itemType
             | _ -> failDeserialization path "Failed to parse list from JSON that is not array."
+
+        let deserializeResizeArray (path: JsonPath) (t: Type) (jvalue: JsonValue) : obj =
+            match jvalue with
+            | JsonValue.Array jvalues ->
+                let itemType = getResizeArrayItemType t
+
+                let arrayValues =
+                    deserializeArrayItems path itemType jvalues
+
+                arrayValues
+                |> List.ofSeq
+                |> createResizeArray itemType
+            | _ -> failDeserialization path "Failed to parse resize array from JSON that is not array."
 
         let deserializeArray (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
             match jvalue with
@@ -549,5 +563,6 @@ module internal Core =
         | t when isList t -> deserializeList path t jValue
         | t when isTuple t -> deserializeTuple path t jValue
         | t when isUnion t -> deserializeUnion path t jValue
+        | t when isResizeArray t -> deserializeResizeArray path t jValue
         | _ -> failDeserialization path $"Failed to serialize, must be one of following types: record, map, array, list, tuple, union. Type is: %s{t.Name}."
-    
+ 
