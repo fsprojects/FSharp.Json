@@ -291,7 +291,7 @@ module internal Core =
         | JsonValue.Record _ -> typeof<Map<string, obj>>
         | JsonValue.Array _ -> getListType typeof<obj>
         | JsonValue.Boolean _ -> typeof<bool>
-        | _ -> null
+        | _ -> typeof<unit>
                 
     let rec deserialize (config: JsonConfig) (path: JsonPath) (t: Type) (jValue: JsonValue): obj =
         let deserializeEnum (path: JsonPath) (t: Type) (jsonField: JsonField) (jValue: JsonValue): obj =
@@ -371,7 +371,9 @@ module internal Core =
                     | t when t = typeof<TimeSpan> ->
                         JsonValueHelpers.getTimeSpan path jValue :> obj                        
                     | t when t = typeof<Guid> ->
-                        JsonValueHelpers.getGuid path jValue :> obj                                            
+                        JsonValueHelpers.getGuid path jValue :> obj
+                    | t when t = typeof<unit> ->
+                        None :> obj
                     | t when t.IsEnum ->
                         deserializeEnum path t jsonField jValue
                     | t when isTuple t || isList t || isArray t || isMap t || isRecord t || isUnion t ->
