@@ -79,13 +79,13 @@ module internal Core =
             match enumMode with
             | EnumMode.Value ->
                 match baseT with
-                | t when t = typeof<int> ->
+                | t when Type.(=)(t, typeof<int>) ->
                     let enumValue = decimal (value :?> int)
                     JsonValue.Number enumValue
-                | t when t = typeof<byte> ->
+                | t when Type.(=)(t, typeof<byte>) ->
                     let enumValue = decimal (value :?> byte)
                     JsonValue.Number enumValue
-                | t when t = typeof<char> ->
+                | t when Type.(=)(t, typeof<char>) ->
                     let enumValue = $"%c{value :?> char}"
                     JsonValue.String enumValue
             | EnumMode.Name ->
@@ -107,45 +107,45 @@ module internal Core =
                 let t, value = transformToTargetType t value jsonField.Transform
                 let t = getUntypedType t value
                 match t with
-                | t when t = typeof<unit> ->
+                | t when Type.(=)(t, typeof<unit>) ->
                     JsonValue.Null
-                | t when t = typeof<uint16> ->
+                | t when Type.(=)(t, typeof<uint16>) ->
                     JsonValue.Number (decimal (value :?> uint16))
-                | t when t = typeof<int16> ->
+                | t when Type.(=)(t, typeof<int16>) ->
                     JsonValue.Number (decimal (value :?> int16))
-                | t when t = typeof<int> ->
+                | t when Type.(=)(t, typeof<int>) ->
                     JsonValue.Number (decimal (value :?> int))
-                | t when t = typeof<uint32> ->
+                | t when Type.(=)(t, typeof<uint32>) ->
                     JsonValue.Number (decimal (value :?> uint32))
-                | t when t = typeof<int64> ->
+                | t when Type.(=)(t, typeof<int64>) ->
                     JsonValue.Number (decimal (value :?> int64))
-                | t when t = typeof<uint64> ->
+                | t when Type.(=)(t, typeof<uint64>) ->
                     JsonValue.Number (decimal (value :?> uint64))
-                | t when t = typeof<bigint> ->
+                | t when Type.(=)(t, typeof<bigint>) ->
                     JsonValue.Number (decimal (value :?> bigint))
-                | t when t = typeof<single> ->
+                | t when Type.(=)(t, typeof<single>) ->
                     JsonValue.Float (float (value :?> single))
-                | t when t = typeof<float> ->
+                | t when Type.(=)(t, typeof<float>) ->
                     JsonValue.Float (value :?> float)
-                | t when t = typeof<decimal> ->
+                | t when Type.(=)(t, typeof<decimal>) ->
                     JsonValue.Number (value :?> decimal)
-                | t when t = typeof<byte> ->
+                | t when Type.(=)(t, typeof<byte>) ->
                     JsonValue.Number (decimal (value :?> byte))
-                | t when t = typeof<sbyte> ->
+                | t when Type.(=)(t, typeof<sbyte>) ->
                     JsonValue.Number (decimal (value :?> sbyte))
-                | t when t = typeof<bool> ->
+                | t when Type.(=)(t, typeof<bool>) ->
                     JsonValue.Boolean (value :?> bool)
-                | t when t = typeof<string> ->
+                | t when Type.(=)(t, typeof<string>) ->
                     JsonValue.String (value :?> string)
-                | t when t = typeof<char> ->
+                | t when Type.(=)(t, typeof<char>) ->
                     JsonValue.String (string(value :?> char))
-                | t when t = typeof<DateTime> ->
+                | t when Type.(=)(t, typeof<DateTime>) ->
                     JsonValue.String ((value :?> DateTime).ToString(jsonField.DateTimeFormat))
-                | t when t = typeof<DateTimeOffset> ->
+                | t when Type.(=)(t, typeof<DateTimeOffset>) ->
                     JsonValue.String ((value :?> DateTimeOffset).ToString(jsonField.DateTimeFormat))
-                | t when t = typeof<TimeSpan> ->
+                | t when Type.(=)(t, typeof<TimeSpan>) ->
                     JsonValue.String ((value :?> TimeSpan).ToString())                    
-                | t when t = typeof<Guid> ->
+                | t when Type.(=)(t, typeof<Guid>) ->
                     JsonValue.String ((value :?> Guid).ToString())                                    
                 | t when t.IsEnum ->
                     serializeEnum t jsonField value
@@ -169,6 +169,14 @@ module internal Core =
                     match config.serializeNone with
                     | Null -> Some JsonValue.Null
                     | Omit -> None
+            |  t when isVOption t ->
+                let unwrapedValue = unwrapVOption t value
+                match unwrapedValue with
+                | ValueSome value -> Some (serializeNonOption (getOptionType t) jsonField value)
+                | ValueNone -> 
+                    match config.serializeNone with
+                    | Null -> Some JsonValue.Null
+                    | Omit -> None
             | _ -> Some (serializeNonOption t jsonField value)
 
         let serializeUnwrapOptionWithNull (t: Type) (jsonField: JsonField) (value: obj): JsonValue =
@@ -178,6 +186,11 @@ module internal Core =
                 match unwrapedValue with
                 | Some value -> serializeNonOption (getOptionType t) jsonField value
                 | None -> JsonValue.Null
+            |  t when isVOption t ->
+                let unwrapedValue = unwrapVOption t value
+                match unwrapedValue with
+                | ValueSome value -> serializeNonOption (getOptionType t) jsonField value
+                | ValueNone -> JsonValue.Null
             | _ -> serializeNonOption t jsonField value
 
         let serializeProperty (therec: obj) (prop: PropertyInfo): (string*JsonValue) option =
@@ -334,43 +347,43 @@ module internal Core =
                 let t = getUntypedType path t jValue
                 let jValue =
                     match t with
-                    | t when t = typeof<int16> ->
+                    | t when Type.(=)(t, typeof<int16>) ->
                         JsonValueHelpers.getInt16 path jValue :> obj
-                    | t when t = typeof<uint16> ->
+                    | t when Type.(=)(t, typeof<uint16>) ->
                         JsonValueHelpers.getUInt16 path jValue :> obj
-                    | t when t = typeof<int> ->
+                    | t when Type.(=)(t, typeof<int>) ->
                         JsonValueHelpers.getInt path jValue :> obj
-                    | t when t = typeof<uint32> ->
+                    | t when Type.(=)(t, typeof<uint32>) ->
                         JsonValueHelpers.getUInt32 path jValue :> obj
-                    | t when t = typeof<int64> ->
+                    | t when Type.(=)(t, typeof<int64>) ->
                         JsonValueHelpers.getInt64 path jValue :> obj
-                    | t when t = typeof<uint64> ->
+                    | t when Type.(=)(t, typeof<uint64>) ->
                         JsonValueHelpers.getUInt64 path jValue :> obj
-                    | t when t = typeof<bigint> ->
+                    | t when Type.(=)(t, typeof<bigint>) ->
                         JsonValueHelpers.getBigint path jValue :> obj
-                    | t when t = typeof<single> ->
+                    | t when Type.(=)(t, typeof<single>) ->
                         JsonValueHelpers.getSingle path jValue :> obj
-                    | t when t = typeof<float> ->
+                    | t when Type.(=)(t, typeof<float>) ->
                         JsonValueHelpers.getFloat path jValue :> obj
-                    | t when t = typeof<decimal> ->
+                    | t when Type.(=)(t, typeof<decimal>) ->
                         JsonValueHelpers.getDecimal path jValue :> obj
-                    | t when t = typeof<byte> ->
+                    | t when Type.(=)(t, typeof<byte>) ->
                         JsonValueHelpers.getByte path jValue :> obj
-                    | t when t = typeof<sbyte> ->
+                    | t when Type.(=)(t, typeof<sbyte>) ->
                         JsonValueHelpers.getSByte path jValue :> obj
-                    | t when t = typeof<bool> ->
+                    | t when Type.(=)(t, typeof<bool>) ->
                         JsonValueHelpers.getBool path jValue :> obj
-                    | t when t = typeof<string> ->
+                    | t when Type.(=)(t, typeof<string>) ->
                         JsonValueHelpers.getString path jValue :> obj
-                    | t when t = typeof<char> ->
+                    | t when Type.(=)(t, typeof<char>) ->
                         JsonValueHelpers.getChar path jValue :> obj
-                    | t when t = typeof<DateTime> ->
+                    | t when Type.(=)(t, typeof<DateTime>) ->
                         JsonValueHelpers.getDateTime CultureInfo.InvariantCulture path jValue :> obj
-                    | t when t = typeof<DateTimeOffset> ->
+                    | t when Type.(=)(t, typeof<DateTimeOffset>) ->
                         JsonValueHelpers.getDateTimeOffset CultureInfo.InvariantCulture path jValue :> obj
-                    | t when t = typeof<TimeSpan> ->
+                    | t when Type.(=)(t, typeof<TimeSpan>) ->
                         JsonValueHelpers.getTimeSpan path jValue :> obj                        
-                    | t when t = typeof<Guid> ->
+                    | t when Type.(=)(t, typeof<Guid>) ->
                         JsonValueHelpers.getGuid path jValue :> obj                                            
                     | t when t.IsEnum ->
                         deserializeEnum path t jsonField jValue
@@ -381,7 +394,7 @@ module internal Core =
 
         let deserializeUnwrapOption (path: JsonPath) (t: Type) (jsonField: JsonField) (jvalue: JsonValue option): obj =
             match t with
-            | t when isOption t ->
+            | t when isOption t || isVOption t ->
                 match jvalue with
                 | Some jvalue ->
                     match jvalue with

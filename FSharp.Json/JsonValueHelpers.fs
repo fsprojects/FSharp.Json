@@ -102,8 +102,8 @@ module internal JsonValueHelpers =
         | JsonValue.String value -> 
             let jValue = TextConversions.AsDateTime cultureInfo value
             match jValue with
-            | Some jValue -> jValue
-            | None -> raiseWrongType path "DateTime" jValue
+            | ValueSome jValue -> jValue
+            | ValueNone -> raiseWrongType path "DateTime" jValue
         | _ -> raiseWrongType path "DateTime" jValue
 
     let getDateTimeOffset cultureInfo (path: JsonPath) (jValue: JsonValue) =
@@ -111,8 +111,8 @@ module internal JsonValueHelpers =
         | JsonValue.String value -> 
             let jValue = AsDateTimeOffset cultureInfo value
             match jValue with
-            | Some jValue -> jValue
-            | None -> raiseWrongType path "DateTimeOffset" jValue
+            | ValueSome jValue -> jValue
+            | ValueNone -> raiseWrongType path "DateTimeOffset" jValue
         | _ -> raiseWrongType path "DateTimeOffset" jValue
 
     let getTimeSpan (path: JsonPath) (jValue: JsonValue) =

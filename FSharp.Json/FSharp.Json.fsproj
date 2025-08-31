@@ -10,7 +10,10 @@
     <RepositoryUrl>https://github.com/vsapronov/FSharp.Json</RepositoryUrl>
     <Version>0.4.1</Version>
   </PropertyGroup>
-  
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+  </PropertyGroup>  
   <ItemGroup>
     <Compile Include="TextConversions.fs" />
     <Compile Include="JsonValue.fs" />

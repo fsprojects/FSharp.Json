@@ -9,6 +9,9 @@ module internal Reflection =
     let isOption_ (t: Type): bool =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<option<_>>
 
+    let isVOption_ (t: Type): bool =
+        t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<voption<_>>
+
     let getOptionType_ (t: Type): Type =
         t.GetGenericArguments().[0]
 
@@ -62,6 +65,7 @@ module internal Reflection =
     let getTupleElements: Type -> Type [] = FSharpType.GetTupleElements |> cacheResult
 
     let isOption: Type -> bool = isOption_ |> cacheResult
+    let isVOption: Type -> bool = isOption_ |> cacheResult
     let getOptionType: Type -> Type = getOptionType_ |> cacheResult
 
     let isArray: Type -> bool = isArray_ |> cacheResult
@@ -82,6 +86,12 @@ module internal Reflection =
         match fields.Length with
         | 1 -> Some fields.[0]
         | _ -> None
+
+    let unwrapVOption (t: Type) (value: obj): obj voption =
+        let _, fields = FSharpValue.GetUnionFields(value, t)
+        match fields.Length with
+        | 1 -> ValueSome fields.[0]
+        | _ -> ValueNone
 
     let optionNone (t: Type): obj =
         let casesInfos = getUnionCases t
