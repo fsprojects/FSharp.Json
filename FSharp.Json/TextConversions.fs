@@ -16,12 +16,14 @@ module private Helpers =
   /// Convert the result of TryParse to option type
   let asOption = function true, v -> ValueSome v | _ -> ValueNone
 
+  [<return: Struct>]
   let (|StringEqualsIgnoreCase|_|) (s1:string) s2 = 
     if s1.Equals(s2, StringComparison.OrdinalIgnoreCase) 
-      then Some () else None
+      then ValueSome () else ValueNone
 
+  [<return: Struct>]
   let (|OneOfIgnoreCase|_|) set str = 
-    if Array.exists (fun s -> StringComparer.OrdinalIgnoreCase.Compare(s, str) = 0) set then Some() else None
+    if Array.exists (fun s -> StringComparer.OrdinalIgnoreCase.Compare(s, str) = 0) set then ValueSome() else ValueNone
 
   let regexOptions = 
 #if FX_NO_REGEX_COMPILATION
@@ -80,9 +82,9 @@ type internal TextConversions private() =
   
   static member AsBoolean (text:string) =     
     match text.Trim() with
-    | StringEqualsIgnoreCase "true" | StringEqualsIgnoreCase "yes" | StringEqualsIgnoreCase "1" -> Some true
-    | StringEqualsIgnoreCase "false" | StringEqualsIgnoreCase "no" | StringEqualsIgnoreCase "0" -> Some false
-    | _ -> None
+    | StringEqualsIgnoreCase "true" | StringEqualsIgnoreCase "yes" | StringEqualsIgnoreCase "1" -> ValueSome true
+    | StringEqualsIgnoreCase "false" | StringEqualsIgnoreCase "no" | StringEqualsIgnoreCase "0" -> ValueSome false
+    | _ -> ValueNone
 
   /// Parse date time using either the JSON milliseconds format or using ISO 8601
   /// that is, either `/Date(<msec-since-1/1/1970>)/` or something
@@ -94,17 +96,17 @@ type internal TextConversions private() =
       matchesMS.Groups.[1].Value 
       |> Double.Parse 
       |> DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds 
-      |> Some
+      |> ValueSome
     else
       // Parse ISO 8601 format, fixing time zone if needed
       let dateTimeStyles = DateTimeStyles.AllowWhiteSpaces ||| DateTimeStyles.RoundtripKind
       match DateTime.TryParse(text, cultureInfo, dateTimeStyles) with
       | true, d ->
           if d.Kind = DateTimeKind.Unspecified then 
-            new DateTime(d.Ticks, DateTimeKind.Local) |> Some
+            new DateTime(d.Ticks, DateTimeKind.Local) |> ValueSome
           else 
-            Some d
-      | _ -> None
+            ValueSome d
+      | _ -> ValueNone
 
   static member AsTimeSpan (text: string) =
     TimeSpan.TryParse(text) |> asOption
